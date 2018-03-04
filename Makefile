@@ -38,8 +38,8 @@ debugger: warehouse.cpp food_item.cpp inventory_report.cpp warehouse.h food_item
 # Compiles an executable file named tester which combines classes with a tester
 # file 
 ##
-tester: warehouse.o food_tester.o inventory_report.cpp inventory_tester.cpp
-	g++ -o tester warehouse.o food_tester.o inventory_report.cpp inventory_tester.cpp
+tester: warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
+	g++ -o tester warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
 
 ###
 # Cleans this directory of any files which may have been created as a result 
