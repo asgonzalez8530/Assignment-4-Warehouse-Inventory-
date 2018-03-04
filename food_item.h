@@ -64,6 +64,13 @@ namespace inventory_report
       * Returns the shelf life of this object.
       */
       int get_shelf_life() const;
+      
+      /**
+      * Overloaded assignment operator. Assigns the contents of the food_item 
+      * object rhs into the object to the left of the operator.
+      */
+      food_item & operator= (const food_item & rhs);
+
   };
 }
 

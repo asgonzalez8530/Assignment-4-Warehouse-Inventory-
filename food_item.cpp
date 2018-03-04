@@ -66,4 +66,25 @@ namespace inventory_report
   {
     return item_shelf_life;
   }
+  
+  /**
+  * Overloaded assignment operator. Assigns the contents of the food_item 
+  * object rhs into the object to the left of the operator.
+  */
+  food_item & food_item::operator= (const food_item & rhs)
+  {
+    // do not assign this object to itself
+    if (this == &rhs)
+    {
+      return *this;
+    }
+    
+    // copy contents of rhs into this
+    this->item_name = rhs.item_name;
+    this->item_upc_code = rhs.item_upc_code;
+    this->item_shelf_life = rhs.item_shelf_life;
+    
+    // return this, always the final step of an overloaded operator=
+    return *this;
+  }
 }
