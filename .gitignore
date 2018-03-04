@@ -1,0 +1,16 @@
+# patterns below define ignored files by git
+
+# the default executable built by Makefile
+a.out
+
+# an executable built for use with gdb
+debugger
+
+# an executable built for testing 
+tester
+
+# any zip file used to turn in code
+*.zip
+
+# any .o files used for partial compilation
+*.o
