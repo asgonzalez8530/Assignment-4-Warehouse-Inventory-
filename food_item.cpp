@@ -23,7 +23,9 @@ namespace inventory_report
   food_item::food_item(const std::string & name, const std::string & upc_code, 
     int shelf_life)
   {
-  
+    item_name = name;
+    item_upc_code = upc_code;
+    item_shelf_life = shelf_life;
   }
       
   /**
@@ -32,7 +34,12 @@ namespace inventory_report
   */
   food_item::food_item(const food_item & other)
   {
-  
+    // I don't know if we will need this but it is super easy so
+    // I defined it. Okay to delete if we don't need it.
+    this->item_name = other.item_name;
+    this->item_upc_code = other.item_upc_code;
+    this->item_shelf_life = other.item_shelf_life;
+    
   }
       
   /**
@@ -40,7 +47,7 @@ namespace inventory_report
   */
   const std::string & food_item::get_name() const
   {
-  
+    return item_name;
   }
     
   /**
@@ -49,7 +56,7 @@ namespace inventory_report
   */
   const std::string & food_item::get_upc_code() const
   {
-  
+    return item_upc_code;
   }
       
   /**
@@ -57,6 +64,6 @@ namespace inventory_report
   */
   int food_item::get_shelf_life() const
   {
-  
+    return item_shelf_life;
   }
 }
