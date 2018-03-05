@@ -26,33 +26,34 @@ namespace inventory_report
     std::string warehouse_name;
     
     // contains this warehouse's inventory 
+    // need to decide on data structure that holds inventory 
     public:
     
       /**
-      * Warehouse constructor takes a name as string of words, which is the city
-      * in which this warehouse is located. 
-      * 
-      * The warehouse name provided uniquely identifies this warehouse.
-      */
+       * Warehouse constructor takes a name as string of words, which is the city
+       * in which this warehouse is located. 
+       * 
+       * The warehouse name provided uniquely identifies this warehouse.
+       */
       warehouse(const std::string & name);
       
       /**
-      * Copy constructor for the warehouse class. Takes a warehouse other, and
-      * constructs a new warehouse object using its contents.
-      */
+       * Copy constructor for the warehouse class. Takes a warehouse other, and
+       * constructs a new warehouse object using its contents.
+       */
       warehouse(const warehouse & other);
       
       /**
-      * Returns a reference to the name of this warehouse.
-      */
+       * Returns a reference to the name of this warehouse.
+       */
       const std::string & get_name() const;
       
       /**
-      * Takes a string of number characters of positive length as upc which 
-      * represents the type of item to be added to this warehouses inventory, 
-      * the quantity of items to be added to the inventory, and that item's 
-      * shelf life and adds those items to this warehouses inventory.
-      */
+       * Takes a string of number characters of positive length as upc which 
+       * represents the type of item to be added to this warehouses inventory, 
+       * the quantity of items to be added to the inventory, and that item's 
+       * shelf life and adds those items to this warehouses inventory.
+       */
       void add_inventory(const std::string & upc, int quantity, int shelf_life);
       
       /**
@@ -79,9 +80,14 @@ namespace inventory_report
       void remove_expired_iventory();
 
       /**
-      * Overloaded assignment operator. Assigns the contents of the warehouse
-      * object rhs into the object to the left of the operator.
-      */
+       * Returns a reference to the inventory contained by this warehouse
+       */
+      void get_inventory(); // need to change return type to const datastructure &
+
+      /**
+       * Overloaded assignment operator. Assigns the contents of the warehouse
+       * object rhs into the object to the left of the operator.
+       */
       warehouse & operator= (const warehouse & rhs);
       
   };
