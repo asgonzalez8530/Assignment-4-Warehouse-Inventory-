@@ -55,7 +55,29 @@ namespace inventory_report
       */
       void add_inventory(const std::string & upc, int quantity, int shelf_life);
       
-      
+      /**
+       * Takes a string of number characters of positive length as upc which
+       * represents the type of item to be removed, along with the quantity to 
+       * be removed. If the number of items with upc is greater than  quantity 
+       * removes quantity items with upc from warehouse inventory, removing the
+       * items with the lowest shelf_life first. If the number of items with upc
+       * is less than or equal to quantity, then all items with upc are removed
+       * from inventory. 
+       * 
+       * Returns the number of items removed from inventory.
+       */
+      int remove_inventory(const std::string & upc, int quantity);
+
+      /**
+       * Reduces the shelf_life of all items in inventory by 1
+       */
+      void update_shelf_life();
+
+      /**
+       * Removes all items in inventory with a shelf_life of 0. 
+       */
+      void remove_expired_iventory();
+
       /**
       * Overloaded assignment operator. Assigns the contents of the warehouse
       * object rhs into the object to the left of the operator.
