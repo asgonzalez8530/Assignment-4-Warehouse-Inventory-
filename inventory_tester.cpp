@@ -64,7 +64,11 @@ int main(int argc, char** argv)
 */
 void print_test_result(const std::string & test_name, bool result)
 {
-  std::string result_string = result ? "passed" : "failed";
+  // the word "passed" in green
+  std::string pass = "\033[1;32mpassed\033[0m";
+  // the word "failed" in red
+  std::string fail = "\033[1;31mfailed\033[0m";
+  std::string result_string = result ? pass : fail;
   std::cout << test_name << " : ";
   std::cout << result_string << std::endl;
 }
