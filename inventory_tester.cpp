@@ -10,6 +10,8 @@
 */
 
 #include "food_item.h"
+#include "warehouse.h"
+
 #include <iostream>
 
 using namespace inventory_report;
@@ -24,6 +26,11 @@ void print_test_result(const std::string & test_name, bool result);
 bool test_food_item_class();
 bool test_food_item_class_copy_constructor();
 bool test_food_item_assignment_operator();
+
+// warehouse class tests
+bool test_warehouse_constructor();
+bool test_warehouse_copy_constructor();
+
 
 /**
 * Main class for inventory_report program testing

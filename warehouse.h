@@ -43,6 +43,11 @@ namespace inventory_report
       warehouse(const warehouse & other);
       
       /**
+      * Returns a reference to the name of this warehouse.
+      */
+      const std::string & get_name() const;
+      
+      /**
       * Takes a string of number characters of positive length as upc which 
       * represents the type of item to be added to this warehouses inventory, 
       * the quantity of items to be added to the inventory, and that item's 
@@ -50,6 +55,12 @@ namespace inventory_report
       */
       void add_inventory(const std::string & upc, int quantity, int shelf_life);
       
+      
+      /**
+      * Overloaded assignment operator. Assigns the contents of the warehouse
+      * object rhs into the object to the left of the operator.
+      */
+      warehouse & operator= (const warehouse & rhs);
       
   };
 }
