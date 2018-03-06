@@ -1,4 +1,4 @@
-/**
+ct/**
 * Author: Aaron Bellis and  Anastasia Gonzalez
 * UID: u0981638 and u0985898
 * Date: 3/8/18
@@ -19,7 +19,19 @@
 namespace inventory_report
 {
   
-  typedef std::map< std::string, std::list<int*> > inventory;
+  /**
+   * represents the status of an item in a warehouse inventory 
+   */
+  struct item_status 
+  {
+    int quantity;
+    int shelf_life;
+  };
+  
+  /**
+   * maps a upc to a doubly linked list of items which expire on the same day
+   */
+  typedef std::map< std::string, std::list<item_status> > inventory;
   
   /**
    * warehouse class represents individual food warehouses and provides
