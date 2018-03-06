@@ -96,7 +96,7 @@ namespace inventory_report
       /**
        * Returns a reference to the inventory contained by this warehouse
        */
-      const inventory & get_inventory();
+      const inventory & get_inventory() const;
 
       /**
        * Overloaded assignment operator. Assigns the contents of the warehouse
