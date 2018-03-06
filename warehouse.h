@@ -12,21 +12,27 @@
 #define WAREHOUSE_H
 
 #include <string>
+#include <map>
+#include <list>
+
 
 namespace inventory_report
 {
   
+  typedef std::map<std::string, std::list<int[]>> inventory;
+  
   /**
-  * warehouse class represents individual food warehouses and provides
-  * information about its name and inventory
-  */
+   * warehouse class represents individual food warehouses and provides
+   * information about its name and inventory
+   */
   class warehouse
   {
     // a string of words that is the city where the warehouse is located
     std::string warehouse_name;
     
     // contains this warehouse's inventory 
-    // need to decide on data structure that holds inventory 
+    inventory my_inventory;
+
     public:
     
       /**
@@ -44,10 +50,18 @@ namespace inventory_report
       warehouse(const warehouse & other);
       
       /**
+       * warehouse class default destructor
+       *
+       * Guarantees that the resources used by this warehouse object will be
+       * freed.
+       */
+      ~warehouse();
+
+      /**
        * Returns a reference to the name of this warehouse.
        */
       const std::string & get_name() const;
-      
+
       /**
        * Takes a string of number characters of positive length as upc which 
        * represents the type of item to be added to this warehouses inventory, 
@@ -82,7 +96,7 @@ namespace inventory_report
       /**
        * Returns a reference to the inventory contained by this warehouse
        */
-      void get_inventory(); // need to change return type to const datastructure &
+      const inventory & get_inventory();
 
       /**
        * Overloaded assignment operator. Assigns the contents of the warehouse
@@ -90,6 +104,12 @@ namespace inventory_report
        */
       warehouse & operator= (const warehouse & rhs);
       
+    private:
+      
+      /**
+       * Releases any memory that was allocated by this object
+       */
+      void clean();
   };
 }
 
