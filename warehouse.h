@@ -19,7 +19,7 @@
 namespace inventory_report
 {
   
-  typedef std::map<std::string, std::list<int[]>> inventory;
+  typedef std::map< std::string, std::list<int*> > inventory;
   
   /**
    * warehouse class represents individual food warehouses and provides

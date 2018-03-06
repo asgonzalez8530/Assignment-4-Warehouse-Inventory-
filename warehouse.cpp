@@ -8,6 +8,8 @@
 * How to run: must be used in conjunction with warehouse.h
 */
 
+#include "warehouse.h"
+
 namespace inventory_report
 {
 
