@@ -39,10 +39,11 @@ namespace inventory_report
    * Guarantees that the resources used by this warehouse object will be
    * freed.
    */
-  warehouse::~warehouse()
-  {
+  // don't know if we need to define our own destructor for this class
+  // warehouse::~warehouse()
+  // {
   
-  }
+  // }
 
   /**
    * Returns a reference to the name of this warehouse.
