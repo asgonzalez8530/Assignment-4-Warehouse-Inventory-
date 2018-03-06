@@ -214,7 +214,7 @@ bool test_warehouse_constructor()
   // check that the getters returned expected values
   bool test_result = true;
   test_result = test_result && name == ware_name;
-  test_restult = test_result && inventory_size == 0;
+  test_result = test_result && inventory_size == 0;
   
   return test_result;
 }
@@ -239,7 +239,7 @@ bool test_warehouse_copy_constructor()
   // check that the getters returned expected values
   bool test_result = true;
   test_result = test_result && name == ware_name;
-  test_restult = test_result && inventory_size == 0;
+  test_result = test_result && inventory_size == 0;
   
   return test_result;
 }
@@ -264,7 +264,7 @@ bool test_warehouse_assignment_operator()
   // check that the getters returned expected values
   bool test_result = true;
   test_result = test_result && name == ware_name;
-  test_restult = test_result && inventory_size == 0;
+  test_result = test_result && inventory_size == 0;
   
   return test_result;
 }
@@ -288,7 +288,7 @@ bool test_warehouse_get_name()
   // check that the getters returned expected values
   bool test_result = true;
   test_result = test_result && name1 == ware_name1;
-  test_restult = test_result && name2 == ware_name2;
+  test_result = test_result && name2 == ware_name2;
   
   return test_result;
 }
@@ -314,9 +314,9 @@ bool test_warehouse_add_inventory()
   
   
   inventory inv = costco.get_inventory();
-  int size = inventory.size();
-  list<item_status> status1 = inventory.at(upc1);
-  list<item_status> status2 = inventory.at(upc2);
+  int size = inv.size();
+  std::list<item_status> status1 = inv.at(upc1);
+  std::list<item_status> status2 = inv.at(upc2);
   
   int status_size1 = status1.size();
   int status_size2 = status2.size();
@@ -324,8 +324,8 @@ bool test_warehouse_add_inventory()
   // check that the inventory is as expected
   bool test_result = true;
   test_result = test_result && size == 2;
-  test_result = test_result && inventory.count(upc1);
-  test_result = test_result && inventory.count(upc2);
+  test_result = test_result && inv.count(upc1);
+  test_result = test_result && inv.count(upc2);
   test_result = test_result && status_size1 == 2;
   test_result = test_result && status_size2 == 1;
   
@@ -365,16 +365,16 @@ bool test_warehouse_remove_inventory()
   
   // inventory now only has one item type in it
   inventory inv = costco.get_inventory();
-  int size = inventory.size(); // should be size 1
-  list<item_status> status1 = inventory.at(upc1);
+  int size = inv.size(); // should be size 1
+  std::list<item_status> status1 = inv.at(upc1);
   
   int status_size1 = status1.size(); // should be size 1 group of items
   
   // check that the inventory is as expected
   bool test_result = true;
   test_result = test_result && size == 1;
-  test_result = test_result && inventory.count(upc1); // should return 1
-  test_result = test_result && !inventory.count(upc2); // should return 0
+  test_result = test_result && inv.count(upc1); // should return 1
+  test_result = test_result && !inv.count(upc2); // should return 0
   test_result = test_result && status_size1 == 1; // one list of upc1
   test_result = test_result && removed_from_upc1 == 15;
   test_result = test_result && removed_from_upc2 == 21;
@@ -403,31 +403,31 @@ bool test_warehouse_update_shelf_life()
   costco.update_shelf_life();
   
   inventory inv = costco.get_inventory();
-  int size = inventory.size(); // should be size 2
+  int size = inv.size(); // should be size 2
   
-  list<item_status> status1 = inventory.at(upc1);
-  list<item_status> status2 = inventory.at(upc2);
+  std::list<item_status> status1 = inv.at(upc1);
+  std::list<item_status> status2 = inv.at(upc2);
   
   // check that the inventory is as expected
   bool test_result = true;
   
   // get an iterator that points to the beginning of this linked list
-  list<item_status>::iterator it = status1.begin();
+  std::list<item_status>::iterator it = status1.begin();
   item_status status = *it; // the first element should be the smallest
   // check shelf life
-  test_result = test_result && status->shelf_life == 0;
+  test_result = test_result && status.shelf_life == 0;
   
   // get second list item
   it++;
   status = *it; // the second element
   // check shelf life
-  test_result = test_result && status->shelf_life == 1;
+  test_result = test_result && status.shelf_life == 1;
   
   // check the list of upc2
   it = status2.begin();
   status = *it;
   // check shelf life
-  test_result = test_result && status->shelf_life == 2;
+  test_result = test_result && status.shelf_life == 2;
   
   return test_result;
   

@@ -91,7 +91,7 @@ namespace inventory_report
   /**
    * Removes all items in inventory with a shelf_life of 0. 
    */
-  void warehouse::remove_expired_iventory()
+  void warehouse::remove_expired_inventory()
   {
   
   }

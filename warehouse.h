@@ -104,7 +104,7 @@ namespace inventory_report
       /**
        * Removes all items in inventory with a shelf_life of 0. 
        */
-      void remove_expired_iventory();
+      void remove_expired_inventory();
 
       /**
        * Returns a reference to the inventory contained by this warehouse
