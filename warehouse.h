@@ -1,4 +1,4 @@
-ct/**
+/**
 * Author: Aaron Bellis and  Anastasia Gonzalez
 * UID: u0981638 and u0985898
 * Date: 3/8/18
@@ -67,7 +67,8 @@ namespace inventory_report
        * Guarantees that the resources used by this warehouse object will be
        * freed.
        */
-      ~warehouse();
+      //don't know if we need to define our own destructor for this
+      //~warehouse();
 
       /**
        * Returns a reference to the name of this warehouse.

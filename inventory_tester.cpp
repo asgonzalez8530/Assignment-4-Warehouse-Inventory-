@@ -30,7 +30,12 @@ bool test_food_item_assignment_operator();
 // warehouse class tests
 bool test_warehouse_constructor();
 bool test_warehouse_copy_constructor();
-
+bool test_warehouse_assignment_operator();
+bool test_warehouse_get_name();
+bool test_warehouse_add_inventory();
+bool test_warehouse_remove_inventory();
+bool test_warehouse_update_shelf_life();
+bool test_warehouse_remove_expired_inventory();
 
 /**
 * Main class for inventory_report program testing
@@ -46,10 +51,31 @@ int main(int argc, char** argv)
   print_test_result("test food_item operator=", 
     test_food_item_assignment_operator());
   
+  /*
+  // test warehouse class
+  std::cout << "Test warehouse class" << std::endl << std::endl;
+  
+  print_test_result("test warehouse constructor", 
+    test_warehouse_constructor());
+  print_test_result("test warehouse copy constructor",
+    bool test_warehouse_copy_constructor());
+  print_test_result("test warehouse assignment operator",
+    test_warehouse_assignment_operator());
+  print_test_result("test warehouse get_name",
+    test_warehouse_get_name());
+  print_test_result("test warehouse add_inventory",
+    test_warehouse_add_inventory());
+  print_test_result("test warehouse remove_inventory",
+    test_warehouse_remove_inventory());
+  print_test_result("test warehouse update_shelf_life",
+    test_warehouse_update_shelf_life());
+  print_test_result("test warehouse remove_expired_inventory",    
+    test_warehouse_remove_expired_inventory());
+  */
+  
   std::cout << std::endl;
     
-  // test warehouse class
-  //std::cout << "Test warehouse class" << std::endl << std::endl;
+  
 }
 
 /**
@@ -64,13 +90,30 @@ int main(int argc, char** argv)
 */
 void print_test_result(const std::string & test_name, bool result)
 {
-  // the word "passed" in green
-  std::string pass = "\033[1;32mpassed\033[0m";
-  // the word "failed" in red
-  std::string fail = "\033[1;31mfailed\033[0m";
-  std::string result_string = result ? pass : fail;
+  // this will turn the text green
+  std::string green = "\033[1;32m";
+  // this will turn the text red
+  std::string red = "\033[1;31m";
+  // this will reset the text to default
+  std::string regular = "\033[0m";
+  
+  std::string pass = "passed";
+  std::string fail = "failed";
+  
   std::cout << test_name << " : ";
-  std::cout << result_string << std::endl;
+  if (result)
+  {
+    std::cout <<  green; // change green
+    std::cout << pass;
+  }
+  else
+  {
+    std::cout <<  red; // change red
+    std::cout << fail;
+  }
+  
+  std::cout << regular << std::endl; // reset color and end line
+
 }
 
 /**
@@ -151,4 +194,276 @@ bool test_food_item_assignment_operator()
   test_result = test_result && shelf_life == item_shelf_life;
   
   return test_result;
+}
+
+/**
+ * tests the warehouse class constructor
+ */
+bool test_warehouse_constructor()
+{
+  std::string name = "Albuquerque";
+  
+  // call default constructor
+  warehouse costco(name);
+  
+  // check state of warehouse after construction
+  std::string ware_name = costco.get_name();
+  inventory ware_inventory = costco.get_inventory();
+  int inventory_size = ware_inventory.size();
+  
+  // check that the getters returned expected values
+  bool test_result = true;
+  test_result = test_result && name == ware_name;
+  test_restult = test_result && inventory_size == 0;
+  
+  return test_result;
+}
+
+/**
+ * tests the warehouse class copy constructor
+ */
+bool test_warehouse_copy_constructor()
+{
+  std::string name = "Albuquerque";
+  
+  // call default constructor
+  warehouse costco(name);
+  // call copy constructor
+  warehouse samsclub(costco);
+  
+  // check state of warehouse after construction
+  std::string ware_name = samsclub.get_name();
+  inventory ware_inventory = samsclub.get_inventory();
+  int inventory_size = ware_inventory.size();
+  
+  // check that the getters returned expected values
+  bool test_result = true;
+  test_result = test_result && name == ware_name;
+  test_restult = test_result && inventory_size == 0;
+  
+  return test_result;
+}
+
+/**
+ * tests the warehouse class assignment operator
+ */
+bool test_warehouse_assignment_operator()
+{
+  std::string name = "Albuquerque";
+  
+  // call default constructor
+  warehouse costco(name);
+  // assign into costco into new warehouse
+  warehouse samsclub = costco;
+  
+  // check state of warehouse after construction
+  std::string ware_name = samsclub.get_name();
+  inventory ware_inventory = samsclub.get_inventory();
+  int inventory_size = ware_inventory.size();
+  
+  // check that the getters returned expected values
+  bool test_result = true;
+  test_result = test_result && name == ware_name;
+  test_restult = test_result && inventory_size == 0;
+  
+  return test_result;
+}
+
+/**
+ * tests the get_name function of the warehouse class
+ */
+bool test_warehouse_get_name()
+{
+  std::string name1 = "Albuquerque";
+  std::string name2 = "Magic Kingdom";
+  
+  // call default constructor
+  warehouse costco(name1);
+  warehouse samsclub(name2);
+  
+  // call the function on both objects
+  std::string ware_name1 = costco.get_name();
+  std::string ware_name2 = samsclub.get_name();
+  
+  // check that the getters returned expected values
+  bool test_result = true;
+  test_result = test_result && name1 == ware_name1;
+  test_restult = test_result && name2 == ware_name2;
+  
+  return test_result;
+}
+
+/**
+ * tests the add_inventory method of the warehouse class
+ */
+bool test_warehouse_add_inventory()
+{
+  warehouse costco("Albuquerque");
+  
+  std::string upc1 = "0123456789";
+  std::string upc2 = "9876543210";
+  
+  int quantity = 10;
+  int shelf_life = 2;
+  
+  // add items to warehouse
+  costco.add_inventory(upc1, quantity, shelf_life);
+  costco.add_inventory(upc1, quantity, shelf_life + 1);
+  costco.add_inventory(upc2, quantity, shelf_life);
+  costco.add_inventory(upc2, quantity + 1, shelf_life);
+  
+  
+  inventory inv = costco.get_inventory();
+  int size = inventory.size();
+  list<item_status> status1 = inventory.at(upc1);
+  list<item_status> status2 = inventory.at(upc2);
+  
+  int status_size1 = status1.size();
+  int status_size2 = status2.size();
+  
+  // check that the inventory is as expected
+  bool test_result = true;
+  test_result = test_result && size == 2;
+  test_result = test_result && inventory.count(upc1);
+  test_result = test_result && inventory.count(upc2);
+  test_result = test_result && status_size1 == 2;
+  test_result = test_result && status_size2 == 1;
+  
+  return test_result;
+  
+}
+
+/**
+ * tests the remove_inventory method of the warehouse class
+ */
+bool test_warehouse_remove_inventory()
+{
+  warehouse costco("Albuquerque");
+  
+  std::string upc1 = "0123456789";
+  std::string upc2 = "9876543210";
+  
+  int quantity = 10;
+  int shelf_life = 2;
+  
+  // add items to warehouse
+  costco.add_inventory(upc1, quantity, shelf_life);
+  costco.add_inventory(upc1, quantity, shelf_life + 1);
+  costco.add_inventory(upc2, quantity, shelf_life);
+  costco.add_inventory(upc2, quantity + 1, shelf_life);
+  
+  // there should now be 20 of upc1 with two different shelf lifes
+  // there should now be 21 of upc2 with one shelf life
+  
+  // should be able to remove all 15 items, there will be nothing with a 
+  // shelf_life of 2.
+  int removed_from_upc1 = costco.remove_inventory(upc1, 15);
+  
+  // shouldn't be able to remove 25 items from upc2, function will report 
+  // that 21 items were removed.
+  int removed_from_upc2 = costco.remove_inventory(upc2, 25);
+  
+  // inventory now only has one item type in it
+  inventory inv = costco.get_inventory();
+  int size = inventory.size(); // should be size 1
+  list<item_status> status1 = inventory.at(upc1);
+  
+  int status_size1 = status1.size(); // should be size 1 group of items
+  
+  // check that the inventory is as expected
+  bool test_result = true;
+  test_result = test_result && size == 1;
+  test_result = test_result && inventory.count(upc1); // should return 1
+  test_result = test_result && !inventory.count(upc2); // should return 0
+  test_result = test_result && status_size1 == 1; // one list of upc1
+  test_result = test_result && removed_from_upc1 == 15;
+  test_result = test_result && removed_from_upc2 == 21;
+  
+  return test_result;
+  
+}
+
+/**
+ * tests the update_shelf_life method of the warehouse class
+ */
+bool test_warehouse_update_shelf_life()
+{
+  warehouse costco("Albuquerque");
+  
+  std::string upc1 = "0123456789";
+  std::string upc2 = "9876543210";
+  
+  int quantity = 10;
+  
+  // add items to warehouse
+  costco.add_inventory(upc1, quantity, 1);
+  costco.add_inventory(upc1, quantity, 2);
+  costco.add_inventory(upc2, quantity, 3);
+  
+  costco.update_shelf_life();
+  
+  inventory inv = costco.get_inventory();
+  int size = inventory.size(); // should be size 2
+  
+  list<item_status> status1 = inventory.at(upc1);
+  list<item_status> status2 = inventory.at(upc2);
+  
+  // check that the inventory is as expected
+  bool test_result = true;
+  
+  // get an iterator that points to the beginning of this linked list
+  list<item_status>::iterator it = status1.begin();
+  item_status status = *it; // the first element should be the smallest
+  // check shelf life
+  test_result = test_result && status->shelf_life == 0;
+  
+  // get second list item
+  it++;
+  status = *it; // the second element
+  // check shelf life
+  test_result = test_result && status->shelf_life == 1;
+  
+  // check the list of upc2
+  it = status2.begin();
+  status = *it;
+  // check shelf life
+  test_result = test_result && status->shelf_life == 2;
+  
+  return test_result;
+  
+}
+
+/**
+ * tests the remove_expired_inventory method of the warehouse class
+ */
+bool test_warehouse_remove_expired_inventory()
+{
+  warehouse costco("Albuquerque");
+  
+  std::string upc1 = "0123456789";
+  std::string upc2 = "9876543210";
+  
+  int quantity = 10;
+  // add items to warehouse
+  costco.add_inventory(upc1, quantity, 1);
+  costco.add_inventory(upc1, quantity, 2);
+  costco.add_inventory(upc2, quantity, 3);
+  
+  costco.update_shelf_life();
+  costco.remove_expired_inventory();
+  
+  // there should now be 10 of upc1 with one shelf life
+  // there should now be 10 of upc2 with one shelf life
+  
+  // should return 10
+  int removed_from_upc1 = costco.remove_inventory(upc1, 15);
+  // should return 10
+  int removed_from_upc2 = costco.remove_inventory(upc2, 25);
+  
+  bool test_result = true;
+  test_result = test_result && removed_from_upc1 == 10;
+  test_result = test_result && removed_from_upc2 == 10;
+  
+  return test_result;
+  
 }
