@@ -53,7 +53,7 @@ debug_tester: warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
 # of running a rule in this makefile
 ##
 clean:
-	rm -f a.out tester debugger cs3505-assignment4.zip *.o
+	rm -f a.out debug_tester tester debugger cs3505-assignment4.zip *.o
 
 ###
 # Zips files for assignment into a single compressed folder ready for turning in
