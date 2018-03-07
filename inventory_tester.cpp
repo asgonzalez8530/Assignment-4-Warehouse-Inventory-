@@ -34,7 +34,7 @@ bool test_warehouse_assignment_operator();
 bool test_warehouse_get_name();
 bool test_warehouse_add_inventory();
 bool test_warehouse_remove_inventory();
-bool test_warehouse_update_shelf_life();
+bool test_warehouse_update_day();
 bool test_warehouse_remove_expired_inventory();
 
 /**
@@ -67,8 +67,8 @@ int main(int argc, char** argv)
     test_warehouse_add_inventory());
   print_test_result("test warehouse remove_inventory",
     test_warehouse_remove_inventory());
-  print_test_result("test warehouse update_shelf_life",
-    test_warehouse_update_shelf_life());
+  print_test_result("test warehouse update_day",
+    test_warehouse_update_day());
   print_test_result("test warehouse remove_expired_inventory",    
     test_warehouse_remove_expired_inventory());
   */
@@ -384,52 +384,13 @@ bool test_warehouse_remove_inventory()
 }
 
 /**
- * tests the update_shelf_life method of the warehouse class
+ * tests the update_daymethod of the warehouse class
  */
-bool test_warehouse_update_shelf_life()
+bool test_warehouse_update_day()
 {
-  warehouse costco("Albuquerque");
-  
-  std::string upc1 = "0123456789";
-  std::string upc2 = "9876543210";
-  
-  int quantity = 10;
-  
-  // add items to warehouse
-  costco.add_inventory(upc1, quantity, 1);
-  costco.add_inventory(upc1, quantity, 2);
-  costco.add_inventory(upc2, quantity, 3);
-  
-  costco.update_shelf_life();
-  
-  inventory inv = costco.get_inventory();
-  int size = inv.size(); // should be size 2
-  
-  std::list<item_status> status1 = inv.at(upc1);
-  std::list<item_status> status2 = inv.at(upc2);
-  
-  // check that the inventory is as expected
-  bool test_result = true;
-  
-  // get an iterator that points to the beginning of this linked list
-  std::list<item_status>::iterator it = status1.begin();
-  item_status status = *it; // the first element should be the smallest
-  // check shelf life
-  test_result = test_result && status.shelf_life == 0;
-  
-  // get second list item
-  it++;
-  status = *it; // the second element
-  // check shelf life
-  test_result = test_result && status.shelf_life == 1;
-  
-  // check the list of upc2
-  it = status2.begin();
-  status = *it;
-  // check shelf life
-  test_result = test_result && status.shelf_life == 2;
-  
-  return test_result;
+  // this method updates the day then removes expired inventory and checks the
+  // state afterwards. So it tests this method well. 
+  return test_warehouse_remove_expired_inventory();
   
 }
 
@@ -449,7 +410,7 @@ bool test_warehouse_remove_expired_inventory()
   costco.add_inventory(upc1, quantity, 2);
   costco.add_inventory(upc2, quantity, 3);
   
-  costco.update_shelf_life();
+  costco.update_day();
   costco.remove_expired_inventory();
   
   // there should now be 10 of upc1 with one shelf life

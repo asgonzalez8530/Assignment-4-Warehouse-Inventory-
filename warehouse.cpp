@@ -39,11 +39,10 @@ namespace inventory_report
    * Guarantees that the resources used by this warehouse object will be
    * freed.
    */
-  // don't know if we need to define our own destructor for this class
-  // warehouse::~warehouse()
-  // {
+  warehouse::~warehouse()
+  {
   
-  // }
+  }
 
   /**
    * Returns a reference to the name of this warehouse.
@@ -78,7 +77,7 @@ namespace inventory_report
   int warehouse::remove_inventory(const std::string & upc, int quantity)
   {
     // get the items that correlate to the inputted upc
-    std::list <item_status> items = inventory.at(upc);
+    std::list <item_status> items = my_inventory.at(upc);
     // if the list stored in the inventory map is empty then state that we were
     // unable to remove any items by returning 0
     if (items.empty())
@@ -102,7 +101,7 @@ namespace inventory_report
    * 
    * Returns the number of items removed from inventory.
    */
-  int warehouse::remove_inventory(std::list & items, int quantity)
+  int warehouse::remove_inventory(std::list<item_status>  & items, int quantity)
   {
       // base cases:
       // 1) quantity is zero

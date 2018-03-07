@@ -72,8 +72,7 @@ namespace inventory_report
        * Guarantees that the resources used by this warehouse object will be
        * freed.
        */
-      //don't know if we need to define our own destructor for this
-      //~warehouse();
+      ~warehouse();
 
       /**
        * Returns a reference to the name of this warehouse.
@@ -139,7 +138,7 @@ namespace inventory_report
        * 
        * Returns the number of items removed from inventory.
        */
-      int remove_inventory(std::list & items, int quantity);
+      int remove_inventory(std::list<item_status> & items, int quantity);
   };
 }
 
