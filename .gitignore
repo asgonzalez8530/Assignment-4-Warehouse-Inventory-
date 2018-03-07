@@ -9,6 +9,9 @@ debugger
 # an executable built for testing 
 tester
 
+# an executable built for testing with gdb flags turned on
+debug_tester
+
 # any zip file used to turn in code
 *.zip
 
