@@ -315,12 +315,18 @@ bool test_warehouse_add_inventory()
   
   inventory inv = costco.get_inventory();
   int size = inv.size();
-  std::list<item_status> status1 = inv.at(upc1);
-  std::list<item_status> status2 = inv.at(upc2);
+  int status_size1 = 0;
+  int status_size2 = 0;
   
-  int status_size1 = status1.size();
-  int status_size2 = status2.size();
+  // get status_size1 and status_size2 safely
+  if (inv.count(upc1) && inv.count(upc2))
+  {
+    std::list<item_status> status1 = inv.at(upc1);
+    std::list<item_status> status2 = inv.at(upc2);
   
+    status_size1 = status1.size();
+    status_size2 = status2.size();
+  }
   // check that the inventory is as expected
   bool test_result = true;
   test_result = test_result && size == 2;
@@ -366,9 +372,15 @@ bool test_warehouse_remove_inventory()
   // inventory now only has one item type in it
   inventory inv = costco.get_inventory();
   int size = inv.size(); // should be size 1
-  std::list<item_status> status1 = inv.at(upc1);
   
-  int status_size1 = status1.size(); // should be size 1 group of items
+  // get status_size1 safely
+  int status_size1 = 0;
+  if (inv.count(upc1))
+  {
+    std::list<item_status> status1 = inv.at(upc1);
+  
+    int status_size1 = status1.size(); // should be size 1 group of items
+  }
   
   // check that the inventory is as expected
   bool test_result = true;
