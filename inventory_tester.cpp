@@ -53,7 +53,7 @@ int main(int argc, char** argv)
   
   
   // test warehouse class
-  std::cout << "Test warehouse class" << std::endl << std::endl;
+  std::cout << std::endl << "Test warehouse class" << std::endl << std::endl;
   
   print_test_result("test warehouse constructor", 
     test_warehouse_constructor());

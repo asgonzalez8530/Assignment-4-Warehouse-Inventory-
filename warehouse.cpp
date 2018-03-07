@@ -84,17 +84,23 @@ namespace inventory_report
   int warehouse::remove_inventory(const std::string & upc, int quantity)
   {
     // get the items that correlate to the inputted upc
-    std::list <item_status> items = my_inventory->at(upc);
+    std::list <item_status> * items = NULL;
+    
+    // safely used map::at(key)
+    if (my_inventory->count(upc))
+    {
+      items = &my_inventory->at(upc);
+    }
     // if the list stored in the inventory map is empty then state that we were
     // unable to remove any items by returning 0
-    if (items.empty())
+    if (items == NULL || items->empty())
     {
       return 0;
     }
     // we pull out the first item
     else
     {
-      remove_inventory(items, quantity);
+      remove_inventory(*items, quantity);
     }
   }
   
