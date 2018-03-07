@@ -47,7 +47,7 @@ namespace inventory_report
     int day;
     
     // contains this warehouse's inventory 
-    inventory my_inventory;
+    inventory * my_inventory;
     
 
     public:
