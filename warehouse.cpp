@@ -32,14 +32,12 @@ namespace inventory_report
    */
   warehouse::warehouse(const warehouse & other)
   {
-    // copy the name
-    warehouse_name = other.warehouse_name;
-    // days should be identical
-    day = other.day;
-    // create a new object on the heap using other.my_inventory
-    // and use that as my_warehouse
-    my_warehouse = new inventory(other.my_inventory);
+    warehouse_name = NULL;
+    day = 0;
+    my_warehouse = NULL;
     
+    *this = other;
+
   }
     
   /**
@@ -58,7 +56,7 @@ namespace inventory_report
    */
   const std::string & warehouse::get_name() const
   {
-  
+    return warehouse_name;
   }
 
   /**
@@ -176,7 +174,7 @@ namespace inventory_report
    */
   const inventory & warehouse::get_inventory() const
   {
-  
+    return my_inventory;
   }
 
   /**
@@ -185,7 +183,20 @@ namespace inventory_report
    */
   warehouse & warehouse::operator= (const warehouse & rhs)
   {
-  
+    if (this == &rhs)
+    {
+      return *this;
+    }
+    
+    clean ();
+    
+    // copy rhs contents
+    this->warehouse_name = rhs.warehouse_name;
+    this->day = rhs.day;
+    this->my_inventory = new inventory(rhs.my_inventory);
+    
+    return *this
+    
   }
       
   /**
@@ -193,9 +204,16 @@ namespace inventory_report
    */
   void warehouse::clean()
   {
+    
     // free my_warehouse
-    delete my_inventory;
+    if (my_warehouse != NULL)
+    {
+      delete my_inventory;
+    }
     // make sure we aren't holding onto a reference to deleted inventory
     my_warehouse = NULL;
+    name = NULL;
+    day = 0;
+    
   }
 }
