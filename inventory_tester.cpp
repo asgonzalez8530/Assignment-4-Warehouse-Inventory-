@@ -51,14 +51,14 @@ int main(int argc, char** argv)
   print_test_result("test food_item operator=", 
     test_food_item_assignment_operator());
   
-  /*
+  
   // test warehouse class
   std::cout << "Test warehouse class" << std::endl << std::endl;
   
   print_test_result("test warehouse constructor", 
     test_warehouse_constructor());
   print_test_result("test warehouse copy constructor",
-    bool test_warehouse_copy_constructor());
+    test_warehouse_copy_constructor());
   print_test_result("test warehouse assignment operator",
     test_warehouse_assignment_operator());
   print_test_result("test warehouse get_name",
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     test_warehouse_update_day());
   print_test_result("test warehouse remove_expired_inventory",    
     test_warehouse_remove_expired_inventory());
-  */
+  
   
   std::cout << std::endl;
     
