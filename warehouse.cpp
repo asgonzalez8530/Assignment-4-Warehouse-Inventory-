@@ -23,7 +23,7 @@ namespace inventory_report
   {
     warehouse_name = name;
     day = 0;
-    my_warehouse = new inventory();
+    my_inventory = new inventory();
   }
       
   /**
@@ -32,9 +32,9 @@ namespace inventory_report
    */
   warehouse::warehouse(const warehouse & other)
   {
-    warehouse_name = NULL;
+    warehouse_name = "";
     day = 0;
-    my_warehouse = NULL;
+    my_inventory = NULL;
     
     *this = other;
 
@@ -84,7 +84,7 @@ namespace inventory_report
   int warehouse::remove_inventory(const std::string & upc, int quantity)
   {
     // get the items that correlate to the inputted upc
-    std::list <item_status> items = my_inventory.at(upc);
+    std::list <item_status> items = my_inventory->at(upc);
     // if the list stored in the inventory map is empty then state that we were
     // unable to remove any items by returning 0
     if (items.empty())
@@ -174,7 +174,7 @@ namespace inventory_report
    */
   const inventory & warehouse::get_inventory() const
   {
-    return my_inventory;
+    return *my_inventory;
   }
 
   /**
@@ -193,9 +193,9 @@ namespace inventory_report
     // copy rhs contents
     this->warehouse_name = rhs.warehouse_name;
     this->day = rhs.day;
-    this->my_inventory = new inventory(rhs.my_inventory);
+    this->my_inventory = new inventory(*rhs.my_inventory);
     
-    return *this
+    return *this;
     
   }
       
@@ -205,14 +205,14 @@ namespace inventory_report
   void warehouse::clean()
   {
     
-    // free my_warehouse
-    if (my_warehouse != NULL)
+    // free my_inventory
+    if (my_inventory != NULL)
     {
       delete my_inventory;
     }
     // make sure we aren't holding onto a reference to deleted inventory
-    my_warehouse = NULL;
-    name = NULL;
+    my_inventory = NULL;
+    warehouse_name = "";
     day = 0;
     
   }
