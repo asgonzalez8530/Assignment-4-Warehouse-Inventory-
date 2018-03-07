@@ -168,11 +168,27 @@ namespace inventory_report
   }
 
   /**
-   * Removes all items in inventory with which expire this day. 
+   * Removes all items in inventory which expire this day. 
    */
   void warehouse::remove_expired_inventory()
   {
-  
+    // get a pointer that points to the beginning and end
+    inventory::iterator inv = my_inventory->begin();
+    inventory::iterator end = my_inventory->end();
+
+    for (inv; inv != end; inv++)
+    {
+      // the list is actually the second item of a pair type
+      // get the address of the list so we don't have to copy the whole list
+      std::list<item_status> * status_list = &(inv->second);
+      // look to the first item of each list
+      std::list<item_status>::iterator status = status_list->begin();
+      // remove it if its expired
+      if (status->death_day == day)
+      {
+	status_list->pop_front();
+      }
+    }
   }
 
   /**
