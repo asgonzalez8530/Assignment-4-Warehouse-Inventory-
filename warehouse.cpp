@@ -67,7 +67,41 @@ namespace inventory_report
    */
   void warehouse::add_inventory(const std::string & upc, int quantity, int shelf_life)
   {
-  
+    // check if this upc exists in inventory
+    if(my_inventory->count(upc)) 
+    {
+      // it exists so lets look at the end and see if we can just add it to that group
+      std::list<item_status> * status_list = &(my_inventory->at(upc));
+      item_status last_status = status_list->back();
+      
+      // if these items will expire on the same day
+      if (last_status.death_day == shelf_life + day)
+      {
+	// ... add the quantity to this status
+	last_status.quantity += quantity;
+      }
+      else
+      {
+	// add a new item_status to the back of the list
+	item_status status = {quantity, shelf_life, shelf_life + day};
+	status_list -> push_back(status);
+      }
+    }
+    else
+    {
+      // upc is not in inventory, need to add it
+      // create new list
+      std::list<item_status> status_list = std::list<item_status>();
+      
+      // create status with given info
+      item_status status = {quantity, shelf_life, shelf_life +day};
+      
+      // place it in the list
+      status_list.push_back(status);
+      // place list in inventory with desegnated upc
+      my_inventory->insert(std::pair< std::string, std::list<item_status> > (upc, status_list));
+    }
+
   }
       
   /**
@@ -100,7 +134,7 @@ namespace inventory_report
     // we pull out the first item
     else
     {
-      remove_inventory(*items, quantity);
+      return remove_inventory(*items, quantity);
     }
   }
   
