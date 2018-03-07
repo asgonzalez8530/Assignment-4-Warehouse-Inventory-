@@ -26,6 +26,7 @@ namespace inventory_report
   {
     int quantity;
     int shelf_life;
+    int death_day;
   };
   
   /**
@@ -42,8 +43,12 @@ namespace inventory_report
     // a string of words that is the city where the warehouse is located
     std::string warehouse_name;
     
+    // keeps track of number of days since report began
+    int day;
+    
     // contains this warehouse's inventory 
     inventory my_inventory;
+    
 
     public:
     
@@ -97,12 +102,12 @@ namespace inventory_report
       int remove_inventory(const std::string & upc, int quantity);
 
       /**
-       * Reduces the shelf_life of all items in inventory by 1
+       * Increments the day counter of the warehouse
        */
-      void update_shelf_life();
+      void update_day();
 
       /**
-       * Removes all items in inventory with a shelf_life of 0. 
+       * Removes all items in inventory with which expire this day. 
        */
       void remove_expired_inventory();
 
@@ -123,6 +128,18 @@ namespace inventory_report
        * Releases any memory that was allocated by this object
        */
       void clean();
+      
+      /**
+       * Takes a list of items and the quantity to be removed. If the first item in
+       * the list has a quantity greater than or equal to the quantity to be 
+       * removed from warehouse inventory, removing the items with the lowest 
+       * shelf_life first. If the first item in the list is less than or equal to 
+       * the quantity, then the first item is removed and this method is 
+       * recursively on the amount of orders left to fill and the list of items left. 
+       * 
+       * Returns the number of items removed from inventory.
+       */
+      int remove_inventory(std::list & items, int quantity);
   };
 }
 

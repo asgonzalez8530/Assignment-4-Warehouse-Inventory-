@@ -77,19 +77,86 @@ namespace inventory_report
    */
   int warehouse::remove_inventory(const std::string & upc, int quantity)
   {
-  
+    // get the items that correlate to the inputted upc
+    std::list <item_status> items = inventory.at(upc);
+    // if the list stored in the inventory map is empty then state that we were
+    // unable to remove any items by returning 0
+    if (items.empty())
+    {
+      return 0;
+    }
+    // we pull out the first item
+    else
+    {
+      remove_inventory(items, quantity);
+    }
   }
-
+  
   /**
-   * Reduces the shelf_life of all items in inventory by 1
+   * Takes a list of items and the quantity to be removed. If the first item in
+   * the list has a quantity greater than or equal to the quantity to be 
+   * removed from warehouse inventory, removing the items with the lowest 
+   * shelf_life first. If the first item in the list is less than or equal to 
+   * the quantity, then the first item is removed and this method is 
+   * recursively on the amount of orders left to fill and the list of items left. 
+   * 
+   * Returns the number of items removed from inventory.
    */
-  void warehouse::update_shelf_life()
+  int warehouse::remove_inventory(std::list & items, int quantity)
   {
-  
+      // base cases:
+      // 1) quantity is zero
+      if (quantity == 0)
+      {
+        return 0;
+      }
+      // 2) reached the end of the list
+      if (items.empty())
+      {
+        // the order can not be fulfilled
+        return 0;
+      }
+      
+      // look at the first item in the list (oldest item in inventory)
+      item_status oldest_item = *items.begin();
+      // if the quantity of the first item is greater than the quantity...
+      if (oldest_item.quantity > quantity)
+      {
+        // ...then we decrement the items quantity appropriate
+        oldest_item.quantity -= quantity;
+        // whole order was fulfilled so we return quantity
+        return quantity;
+      }
+      // else if the quantity of the first item is equal to the quantity...
+      else if (oldest_item.quantity == quantity)
+      {
+        // ...then we remove the item from the inventory 
+        items.pop_front();
+        // whole order was fulfilled so we return the quantity
+        return quantity;
+      }
+      // else the quantity of the first item is less than the quantity...
+      else
+      {
+        // ...we determine how many orders we are able to fill
+        int orders_filled = oldest_item.quantity;
+        // remove the oldest item from the inventory because the quantity is now zero
+        items.pop_front();
+        // and ask for the amount of orders left to fill on the updated list
+        return orders_filled + remove_inventory(items, quantity - orders_filled);
+      }
   }
 
   /**
-   * Removes all items in inventory with a shelf_life of 0. 
+   * Increments the day counter of the warehouse
+   */
+  void warehouse::update_day()
+  {
+    day++;
+  }
+
+  /**
+   * Removes all items in inventory with which expire this day. 
    */
   void warehouse::remove_expired_inventory()
   {
