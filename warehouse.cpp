@@ -72,19 +72,19 @@ namespace inventory_report
     {
       // it exists so lets look at the end and see if we can just add it to that group
       std::list<item_status> * status_list = &(my_inventory->at(upc));
-      item_status last_status = status_list->back();
+      item_status & last_status = status_list->back();
       
       // if these items will expire on the same day
       if (last_status.death_day == shelf_life + day)
       {
-	// ... add the quantity to this status
-	last_status.quantity += quantity;
+	      // ... add the quantity to this status
+	      last_status.quantity += quantity;
       }
       else
       {
-	// add a new item_status to the back of the list
-	item_status status = {quantity, shelf_life, shelf_life + day};
-	status_list -> push_back(status);
+	      // add a new item_status to the back of the list
+	      item_status status = {quantity, shelf_life, shelf_life + day};
+	      status_list -> push_back(status);
       }
     }
     else
@@ -134,7 +134,14 @@ namespace inventory_report
     // we pull out the first item
     else
     {
-      return remove_inventory(*items, quantity);
+      int amount_removed = remove_inventory(*items, quantity);
+      // clean up inventory 
+      if (items->empty())
+      {
+        my_inventory->erase(upc);
+      }
+      
+      return amount_removed;
     }
   }
   
@@ -150,12 +157,14 @@ namespace inventory_report
    */
   int warehouse::remove_inventory(std::list<item_status>  & items, int quantity)
   {
+      
       // base cases:
       // 1) quantity is zero
       if (quantity == 0)
       {
         return 0;
       }
+      
       // 2) reached the end of the list
       if (items.empty())
       {

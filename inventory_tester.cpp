@@ -327,6 +327,7 @@ bool test_warehouse_add_inventory()
     status_size1 = status1.size();
     status_size2 = status2.size();
   }
+  
   // check that the inventory is as expected
   bool test_result = true;
   test_result = test_result && size == 2;
@@ -358,15 +359,11 @@ bool test_warehouse_remove_inventory()
   costco.add_inventory(upc2, quantity, shelf_life);
   costco.add_inventory(upc2, quantity + 1, shelf_life);
   
+  
+  
   // there should now be 20 of upc1 with two different shelf lifes
   // there should now be 21 of upc2 with one shelf life
-  
-  // should be able to remove all 15 items, there will be nothing with a 
-  // shelf_life of 2.
   int removed_from_upc1 = costco.remove_inventory(upc1, 15);
-  
-  // shouldn't be able to remove 25 items from upc2, function will report 
-  // that 21 items were removed.
   int removed_from_upc2 = costco.remove_inventory(upc2, 25);
   
   // inventory now only has one item type in it
@@ -379,17 +376,34 @@ bool test_warehouse_remove_inventory()
   {
     std::list<item_status> status1 = inv.at(upc1);
   
-    int status_size1 = status1.size(); // should be size 1 group of items
+    status_size1 = status1.size(); // should be size 1 group of items
   }
+  
   
   // check that the inventory is as expected
   bool test_result = true;
   test_result = test_result && size == 1;
   test_result = test_result && inv.count(upc1); // should return 1
-  test_result = test_result && !inv.count(upc2); // should return 0
-  test_result = test_result && status_size1 == 1; // one list of upc1
+  test_result = test_result && inv.count(upc2) == 0; // should return 0
+  test_result = test_result && status_size1 == 1; // one item in list of upc1
   test_result = test_result && removed_from_upc1 == 15;
   test_result = test_result && removed_from_upc2 == 21;
+  
+  
+  // if we failed show what passed and what did not
+  if (!test_result)
+  {
+    std::cout << std::endl << "checking all parts of remove_inventory" << std::endl;
+    
+    print_test_result("check size == 1", size == 1);
+    print_test_result("upc1 has entry in inventory", inv.count(upc1));
+    print_test_result("upc2 doesn't have entry in inventory", inv.count(upc2) == 0);
+    print_test_result("upc1 list has one item", status_size1 == 1);
+    print_test_result("15 items removed from upc1", removed_from_upc1 == 15);
+    print_test_result("21 items removed from upc2", removed_from_upc2 == 21);
+    
+    std::cout << std::endl;
+  }
   
   return test_result;
   
