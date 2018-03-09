@@ -20,6 +20,8 @@ using namespace inventory_report;
 food_item parse_food_item (const std::string & line);
 std::string get_next_token(const std::string & line, 
   const std::string & search_string);
+std::string get_till_end_of_line(const std::string & line, 
+  const std::string & search_string);
 
 
 /**
@@ -95,7 +97,9 @@ int main(int argc, char** argv)
  */
 food_item parse_food_item (const std::string & line)
 { 
-  
+  std::string upc = get_next_token(line, "UPC Code: ");
+  std::string shelf_life = get_next_token(line, "Shelf life: ");
+
 }
 
 /**
@@ -114,7 +118,7 @@ std::string get_next_token(const std::string & line,
   std::string token = "";
   int i = position + search_string.length() + 1;
   // go untill we find a space
-  while (line[i] != ' ' && line[i] != '\n' && i == line.length())
+  while (line[i] != ' ' && line[i] != '\n' && i != line.length())
   {
     token += line[i];
     i++;
@@ -123,3 +127,27 @@ std::string get_next_token(const std::string & line,
   return token;
 }
 
+/**
+ * Searches line for search_string and returns a string which contains all 
+ * characters after search_string until the end of the line
+ */
+std::string get_till_end_of_line(const std::string & line, 
+  const std::string & search_string)
+{
+  
+  // this will return the position of search_string[0] in the above string
+  int position = line.find_first_of(search_string);
+  
+  // we want the upc, which should start in the character after the search 
+  // string
+  std::string token = "";
+  int i = position + search_string.length() + 1;
+  // go untill we find a space
+  while (line[i] != '\n' && i == line.length())
+  {
+    token += line[i];
+    i++;
+  }
+  
+  return token;
+}
