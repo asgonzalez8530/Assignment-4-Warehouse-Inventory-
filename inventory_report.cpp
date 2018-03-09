@@ -18,6 +18,8 @@
 using namespace inventory_report;
 
 food_item parse_food_item (const std::string & line);
+std::string get_next_token(const std::string & line, 
+  const std::string & search_string);
 
 
 /**
@@ -92,8 +94,32 @@ int main(int argc, char** argv)
  * Takes in a line from transaction report and parses it into a food_item object 
  */
 food_item parse_food_item (const std::string & line)
-{
-  // get the upc 
+{ 
+  
 }
 
+/**
+ * Searches line for search_string and returns the next token (delimited by ' ')
+ * contianed in line
+ */
+std::string get_next_token(const std::string & line, 
+  const std::string & search_string)
+{
+  
+  // this will return the position of search_string[0] in the above string
+  int position = line.find_first_of(search_string);
+  
+  // we want the upc, which should start in the character after the search 
+  // string
+  std::string token = "";
+  int i = position + search_string.length() + 1;
+  // go untill we find a space
+  while (line[i] != ' ' && line[i] != '\n' && i == line.length())
+  {
+    token += line[i];
+    i++;
+  }
+  
+  return token;
+}
 
