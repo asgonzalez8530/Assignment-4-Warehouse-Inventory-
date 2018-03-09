@@ -14,7 +14,6 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <iostream>
 #include <fstream>
-#include <sstream>
 
 /**
  * Main function for the inventory report program. Takes one command line
@@ -42,11 +41,42 @@ int main(int argc, char** argv)
   
   int line_size = 1000;
   char line[line_size];
-  
+  std::string word_delimiter = " ";
   // getline reads up to line_size or until '/n' char and places into line 
   while (in_file.getline(line,line_size))
   {
-    // handle contents of line here
+    std::string line_string(line);
+    std::string token = line_string.substr(0, line_string.find(word_delimiter));
+    
+    if (token == "FoodItem")
+    {
+      
+    }
+    else if (token == "Warehouse")
+    {
+
+    }
+    else if (token == "Start")
+    {
+      
+    }
+    else if (token == "Receive:")
+    {
+      
+    }
+    else if (token == "Request:")
+    {
+    
+    }
+    else if (token == "Next")
+    {
+      
+    }
+    else if (token == "End")
+    {
+    
+    }
+    
   }
   
   // file must be closed when done
