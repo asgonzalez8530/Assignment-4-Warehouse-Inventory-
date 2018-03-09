@@ -13,7 +13,7 @@
 # Compiles a.out file required for assignment submission.
 ##
 a.out: food_item.o warehouse.o inventory_report.cpp
-	g++ *.o 
+	g++ food_item.o warehouse.o inventory_report.cpp
 
 ###
 # Compiles food_item class to .o file for partial compilation
