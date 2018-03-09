@@ -13,6 +13,8 @@
 #include "food_item.h"
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 /**
  * Main function for the inventory report program. Takes one command line
@@ -30,9 +32,24 @@ int main(int argc, char** argv)
     return 0;
   }
   
-  std::string file = argv->[1];
+  // get first command line argument, which should be the file to be processed
+  char* file = argv[1];
   
-  std::cout << file << std::endl;
-
+  // create an in file stream using the file
+  std::ifstream in_file;
+  
+  in_file.open(file);
+  
+  int line_size = 1000;
+  char line[line_size];
+  
+  // getline reads up to line_size or until '/n' char and places into line 
+  while (in_file.getline(line,line_size))
+  {
+    // handle contents of line here
+  }
+  
+  // file must be closed when done
+  in_file.close();
 }
 
