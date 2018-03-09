@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     }
     else if (token == "Warehouse")
     {
-      warehouse w = warehouse parse_warehouse (const std::string & line);
+      warehouse w = parse_warehouse (line_string);
       // do something with the warehouse...
     }
     else if (token == "Start")
@@ -84,13 +84,13 @@ int main(int argc, char** argv)
     {
       // we will probably want to do all the work inside the method
       // or we can return a vector or array with the info
-      void parse_receive (const std::string & line);
+      parse_receive (line_string);
     }
     else if (token == "Request:")
     {
       // we will probably want to do all the work inside the method
       // or we can return a vector or array with the info
-      void parse_request (const std::string & line);
+      parse_request (line_string);
     }
     else if (token == "Next")
     {
@@ -137,8 +137,8 @@ void parse_receive (const std::string & line)
   // parse the line for the upc number
   std::string upc = get_next_token(line, "Receive: ");
   // parse the line for the shipment quantity
-  std::string upc = get_next_token(line, " ");
-  int quantity = std::atoi(shelf_life);
+  std::string shipment_size = get_next_token(line, " ");
+  int quantity = std::atoi(shipment_size.c_str());
   // parse the line for the warehouse name 
   std::string warehouse_name = get_next_token(line, " ");
 }
@@ -151,8 +151,8 @@ void parse_request (const std::string & line)
   // parse the line for the upc number
   std::string upc = get_next_token(line, "Request: ");
   // parse the line for the request quantity
-  std::string upc = get_next_token(line, " ");
-  int quantity = std::atoi(shelf_life);
+  std::string request_size = get_next_token(line, " ");
+  int quantity = std::atoi(request_size.c_str());
   // parse the line for the warehouse name 
   std::string warehouse_name = get_next_token(line, " ");
 }
