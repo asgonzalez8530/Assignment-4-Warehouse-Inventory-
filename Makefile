@@ -39,14 +39,14 @@ debugger: warehouse.cpp food_item.cpp inventory_report.cpp warehouse.h food_item
 # file 
 ##
 tester: warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
-	g++ -o tester warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
+	g++ -o tester warehouse.o food_item.o inventory_tester.cpp
 
 ###
 # Compiles an executable file named debug_tester which combines classes with a 
 # tester file along with gdb flags
 ##
 debug_tester: warehouse.o food_item.o inventory_report.cpp inventory_tester.cpp
-	g++ -o debug_tester warehouse.cpp food_item.cpp inventory_report.cpp inventory_tester.cpp -g
+	g++ -o debug_tester warehouse.cpp food_item.cpp inventory_tester.cpp -g
 
 ###
 # Cleans this directory of any files which may have been created as a result 

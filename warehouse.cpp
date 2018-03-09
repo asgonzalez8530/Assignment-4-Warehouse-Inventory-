@@ -229,7 +229,7 @@ namespace inventory_report
       // remove it if its expired
       if (status->death_day == day)
       {
-	status_list->pop_front();
+	      status_list->pop_front();
       }
     }
   }

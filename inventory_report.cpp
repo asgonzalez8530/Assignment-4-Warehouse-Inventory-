@@ -15,6 +15,11 @@
 #include <iostream>
 #include <fstream>
 
+using namespace inventory_report;
+
+food_item parse_food_item (const std::string & line);
+
+
 /**
  * Main function for the inventory report program. Takes one command line
  * argument which is the name of a text file to be processed and outputs to
@@ -50,7 +55,7 @@ int main(int argc, char** argv)
     
     if (token == "FoodItem")
     {
-      
+      food_item item = parse_food_item(line_string); 
     }
     else if (token == "Warehouse")
     {
@@ -82,4 +87,13 @@ int main(int argc, char** argv)
   // file must be closed when done
   in_file.close();
 }
+
+/**
+ * Takes in a line from transaction report and parses it into a food_item object 
+ */
+food_item parse_food_item (const std::string & line)
+{
+  // get the upc 
+}
+
 
