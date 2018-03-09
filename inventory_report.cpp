@@ -14,6 +14,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 using namespace inventory_report;
 
@@ -22,7 +23,7 @@ std::string get_next_token(const std::string & line,
   const std::string & search_string);
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string);
-
+boost::gregorian::date parse_start_date (const std::string & line);
 
 /**
  * Main function for the inventory report program. Takes one command line
@@ -60,14 +61,18 @@ int main(int argc, char** argv)
     if (token == "FoodItem")
     {
       food_item item = parse_food_item(line_string); 
+      // do something with the food_item
+      // ...
     }
     else if (token == "Warehouse")
     {
-
+      
     }
     else if (token == "Start")
     {
-      
+      boost::gregorian::date date = parse_start_date(line);
+      // do something with the date
+      // ...
     }
     else if (token == "Receive:")
     {
@@ -79,11 +84,13 @@ int main(int argc, char** argv)
     }
     else if (token == "Next")
     {
-      
+      // don't have to parse, just have to do the next day actions
     }
     else if (token == "End")
     {
-    
+      // do end of day then break
+      
+      break;
     }
     
   }
@@ -99,7 +106,28 @@ food_item parse_food_item (const std::string & line)
 { 
   std::string upc = get_next_token(line, "UPC Code: ");
   std::string shelf_life = get_next_token(line, "Shelf life: ");
+  std::string name = get_till_end_of_line(line, "Name: ");
+  int life = std::atoi(shelf_life.c_str());
+  
+  return food_item(name, upc, life);
+}
 
+/**
+ * Parses a line which includes the start date and returns a start date
+ */ 
+boost::gregorian::date parse_start_date (const std::string & line)
+{
+  std::string date_string = get_next_token(line, "Start Date: ");
+  boost::gregorian::date my_date(boost::gregorian::from_us_string(date_string));
+  
+  return my_date;
+  
+  /*
+  std::string date_delimiter = "/";
+  std::string month = 
+  s.erase(0, s.find(delimiter) + delimiter.length());
+  return my_date;
+  */
 }
 
 /**
