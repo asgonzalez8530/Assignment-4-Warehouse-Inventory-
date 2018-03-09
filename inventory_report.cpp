@@ -19,11 +19,21 @@
 using namespace inventory_report;
 
 food_item parse_food_item (const std::string & line);
+warehouse parse_warehouse (const std::string & line);
+void parse_receive (const std::string & line);
+void parse_request (const std::string & line);
 std::string get_next_token(const std::string & line, 
   const std::string & search_string);
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string);
 boost::gregorian::date parse_start_date (const std::string & line);
+
+//******** global variables ********//
+const std::string report_by = "Report by Aaron and Anastasia\n";
+const std::string underfilled_orders = "Underfilled orders:\n";
+const std::string well_stocked_products = "Well-Stocked Products:\n";
+const std::string most_popular_products = "Most Popular Products:\n";
+
 
 /**
  * Main function for the inventory report program. Takes one command line
@@ -66,7 +76,10 @@ int main(int argc, char** argv)
     }
     else if (token == "Warehouse")
     {
-      
+
+      warehouse w = parse_warehouse (line_string);
+      // do something with the warehouse...
+
     }
     else if (token == "Start")
     {
@@ -76,11 +89,15 @@ int main(int argc, char** argv)
     }
     else if (token == "Receive:")
     {
-      
+      // we will probably want to do all the work inside the method
+      // or we can return a vector or array with the info
+      parse_receive (line_string);
     }
     else if (token == "Request:")
     {
-    
+      // we will probably want to do all the work inside the method
+      // or we can return a vector or array with the info
+      parse_request (line_string);
     }
     else if (token == "Next")
     {
@@ -128,6 +145,46 @@ boost::gregorian::date parse_start_date (const std::string & line)
   s.erase(0, s.find(delimiter) + delimiter.length());
   return my_date;
   */
+}
+
+/**
+ * Takes in a line from transaction report and parses it into a warehouse object 
+ */
+warehouse parse_warehouse (const std::string & line)
+{ 
+  // parse the line for the warehouse name
+  std::string name = get_till_end_of_line(line, "Warehouse - ");
+
+  // return the warehouse object
+  return warehouse(name);
+}
+
+/**
+ * Takes in a line from transaction report and parses the shipment 
+ */
+void parse_receive (const std::string & line)
+{ 
+  // parse the line for the upc number
+  std::string upc = get_next_token(line, "Receive: ");
+  // parse the line for the shipment quantity
+  std::string shipment_size = get_next_token(line, " ");
+  int quantity = std::atoi(shipment_size.c_str());
+  // parse the line for the warehouse name 
+  std::string warehouse_name = get_next_token(line, " ");
+}
+
+/**
+ * Takes in a line from transaction report and parses the request
+ */
+void parse_request (const std::string & line)
+{ 
+  // parse the line for the upc number
+  std::string upc = get_next_token(line, "Request: ");
+  // parse the line for the request quantity
+  std::string request_size = get_next_token(line, " ");
+  int quantity = std::atoi(request_size.c_str());
+  // parse the line for the warehouse name 
+  std::string warehouse_name = get_next_token(line, " ");
 }
 
 /**
