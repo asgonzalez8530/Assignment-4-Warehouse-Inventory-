@@ -18,6 +18,7 @@
 #include <map>
 #include <list>
 #include <set>
+#include <vector>
 
 namespace inventory_report
 {
@@ -142,6 +143,47 @@ namespace inventory_report
        */
       void start_day();
       
+      /**
+       * Adds underfilled orders into a vector as a string and returns the 
+       * resulting vector 
+       * Strings in vector will be in the format DATE UPC ITEM_NAME this will be
+       * ordered first by DATE then by UPC 
+       * 
+       * If an underfilled order was made on July 20, 1969 with upc 0123456789
+       * and that upc corresponded to a food item named Tang, it would appear
+       * as the following: 
+       *
+       * "07/20/1969 0123456789 Tang"
+       */
+      std::vector<std::string> request_underfilled_orders();
+       
+      /**
+       * Returns a vector containing [0, 3] items which are the three most 
+       * requested items in the inventory.
+       * String in vector will be in the format NUMBER_OF_REQUESTS UPC ITEM_NAME
+       * and will be ordered by NUMBER_OF_REQUESTS then by UPC
+       *
+       * If popular order was requested 500 times with upc 0123456789
+       * and that upc corresponded to a food item named "Hot Wings", it would 
+       * appear as the following: 
+       *
+       * "500 0123456789 Hot Wings"
+       */
+      std::vector<std::string> request_popular_items();
+        
+      /**
+       * Returns a vector containing all items which are currently stocked in at
+       * least two warehouses. Strings will be in the format UPC ITEM_NAME
+       *
+       * If a product with upc 0123456789 named "Hello Kitty Erasers" was
+       * was stocked in the inventory of two warehouses, it would appear as the
+       * following:
+       * 
+       * "0123456789 Hello Kitty Erasers"
+       */
+       std::vector<std::string> request_well_stocked_items();
+       
+        
     private:
       
       /**

@@ -124,15 +124,15 @@ int main(int argc, char** argv)
     }
     
   }
-
+  // file must be closed when done
+  in_file.close();
+  
   std::cout << print_report(my_report) << std::endl;
 
   // clean up report 
   delete my_report;
   my_report = NULL;
   
-  // file must be closed when done
-  in_file.close();
 }
 
 /**
