@@ -63,7 +63,8 @@ namespace inventory_report
   void report::add_food_item(const std::string & name, const std::string & upc, 
     int shelf_life)
   {
-  
+    food_items->insert(std::pair<std::string, food_item>(upc, 
+      food_item(name, upc, shelf_life)));
   }
   
   /**
