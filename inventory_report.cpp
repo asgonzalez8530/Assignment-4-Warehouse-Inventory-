@@ -24,6 +24,8 @@ std::string print_report(inventory_report::report * r);
 std::string request_underfilled_items(inventory_report::report * r);
 std::string request_well_stocked_items(inventory_report::report * r);
 std::string request_most_popular_products(inventory_report::report * r);
+inventory_report::shipment_request get_upc_quantity_warehouse(const std::string & line, 
+  const std::string & search_string);
 
 // helper methods
 std::string get_next_token(const std::string & line, 
@@ -177,16 +179,14 @@ std::string parse_start_date (const std::string & line)
  */
 void parse_receive (inventory_report::report * r, const std::string & line)
 { 
-  // parse the line for the upc number
-  std::string upc = get_next_token(line, "Receive: ");
-  // parse the line for the shipment quantity
-  std::string shipment_size = get_next_token(line, " ");
-  int quantity = std::atoi(shipment_size.c_str());
-  // parse the line for the warehouse name 
-  std::string warehouse_name = get_next_token(line, " ");
+  
+  // parse line for upc, quantity, and warehouse name
+  inventory_report::shipment_request request = 
+    get_upc_quantity_warehouse(line, "Receive: ");
 
   // add shipment to the warehouse in the report
-  r->receive_at_warehouse(warehouse_name, upc, quantity);
+  r->receive_at_warehouse(request.name, request.upc, request.quantity);
+
 }
 
 /**
@@ -194,16 +194,12 @@ void parse_receive (inventory_report::report * r, const std::string & line)
  */
 void parse_request (inventory_report::report * r, const std::string & line)
 { 
-  // parse the line for the upc number
-  std::string upc = get_next_token(line, "Request: ");
-  // parse the line for the request quantity
-  std::string request_size = get_next_token(line, " ");
-  int quantity = std::atoi(request_size.c_str());
-  // parse the line for the warehouse name 
-  std::string warehouse_name = get_next_token(line, " ");
+   // parse line for upc, quantity, and warehouse name
+  inventory_report::shipment_request request = 
+    get_upc_quantity_warehouse(line, "Request: ");
 
-  // request from the report
-  r->request_from_warehouse(warehouse_name, upc, quantity);
+  // add shipment to the warehouse in the report
+  r->receive_at_warehouse(request.name, request.upc, request.quantity);
 }
 
 /**
@@ -314,3 +310,25 @@ std::string get_till_end_of_line(const std::string & line,
   
   return token;
 }
+
+
+/**
+* Searches line for search_string and returns the next token (delimited by ' ')
+* contianed in line
+*/
+inventory_report::shipment_request get_upc_quantity_warehouse(const std::string & line, 
+  const std::string & search_string)
+{ 
+  // we want the upc, quantity, and warehouse name from this line
+  std::string upc = get_next_token(line, search_string);
+  std::string quantity = get_next_token(line, upc + " ");
+  std::string warehouse_name = get_till_end_of_line(line, quantity + " ");
+
+  // convert string quantity to int
+  int quant = std::atoi(quantity.c_str());
+
+  inventory_report::shipment_request request= {warehouse_name, upc, quant};
+
+  return request;
+}
+
