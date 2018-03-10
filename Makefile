@@ -19,7 +19,7 @@ a.out: food_item.o warehouse.o report.o inventory_report.cpp
 # compiles report class to .o file for partial compilation
 ##
 report.o: food_item.h warehouse.h
-  g++ -c report.cpp -lboost_date_time
+	g++ -c report.cpp -lboost_date_time
 
 ###
 # Compiles food_item class to .o file for partial compilation

@@ -22,7 +22,34 @@
 namespace inventory_report
 {
   
-  typedef boost::gregorian::date boost_date;
+  struct shipment_request
+  {
+    std::string name;
+    std::string upc;
+    int quantity;
+  };
+  
+  // typedefs to make our life easier
+  
+  // a shorter name for a boost date
+  typedef boost::gregorian::date boost_date; 
+  
+  // warehouse_map maps a warehouses names to warehouse objects
+  typedef std::map<std::string, warehouse> name_warehouse_map;
+  
+  // food_item_map maps upcs to food_item objects
+  typedef std::map<std::string, food_item> upc_food_item_map;
+  
+  // request_list is a list of shipment_request structs
+  typedef std::list<shipment_request> request_list;
+  
+  // underfilled_map maps a date to a list of item upc's which were underfilled
+  // that day
+  typedef std::map<boost_date, std::list<std::string> > date_items_map;
+  
+  // maps an item to the number of times it was requested
+  typedef std::map<std::string, int> upc_number_map;
+  
   
   /**
    *  Report class represents state of all warehouses, possible items and 
@@ -32,23 +59,23 @@ namespace inventory_report
   {
         
     // warehouses maps warehouse names to a warehouse object with the same name
-    map<std::string, warehouse> & warehouses;
+    name_warehouse_map * warehouses;
     
     // food_items maps upc's to indivdual food items allowing for easy look up
     // of information about food items
-    map<std::string, food_item> & food_items;
+    upc_food_item_map * food_items;
     
     // contians a list of pending requests. This list is emptied by end_day()
-    list<shipment_request> & requests;
+    request_list * requests;
     
     // maps a date to a list of upc's which are underfilled orders from that day
-    map<boost_date, list<std::string> > & underfilled_orders;
+    date_items_map * underfilled_orders;
     
     // maps upcs to the number of times they have been requested
-    map<std::string, int> & popular_products
+    upc_number_map * popular_products;
     
     // the current date. NULL if not yet specified
-    boost_date date;
+    boost_date * date;
     
     public: 
       
