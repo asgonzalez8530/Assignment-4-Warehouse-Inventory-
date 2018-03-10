@@ -103,8 +103,6 @@ namespace inventory_report
     
     // add inventory to the warehouse
     house->add_inventory(upc, quantity, shelf_life);
-    
-    
   }
   
   /** 
