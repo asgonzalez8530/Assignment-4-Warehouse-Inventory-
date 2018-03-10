@@ -9,24 +9,28 @@
  *   executalbe. 
  */
 
-#include "warehouse.h"
-#include "food_item.h"
-#include <boost/date_time/gregorian/gregorian.hpp>
+#include "report.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
-using namespace inventory_report;
+// pre defined methods
+void parse_food_item (inventory_report::report * r, const std::string & line);
+std::string parse_warehouse (const std::string & line);
+std::string parse_start_date (const std::string & line);
+void parse_receive (inventory_report::report * r, const std::string & line);
+void parse_request (inventory_report::report * r, const std::string & line);
+std::string print_report(inventory_report::report * r);
+std::string request_underfilled_items(inventory_report::report * r);
+std::string request_well_stocked_items(inventory_report::report * r);
+std::string request_most_popular_products(inventory_report::report * r);
 
-food_item parse_food_item (const std::string & line);
-warehouse parse_warehouse (const std::string & line);
-void parse_receive (const std::string & line);
-void parse_request (const std::string & line);
+// helper methods
 std::string get_next_token(const std::string & line, 
   const std::string & search_string);
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string);
-boost::gregorian::date parse_start_date (const std::string & line);
+
 
 //******** global variables ********//
 const std::string report_by = "Report by Aaron and Anastasia\n";
@@ -63,6 +67,10 @@ int main(int argc, char** argv)
   char line[line_size];
   std::string word_delimiter = " ";
   // getline reads up to line_size or until '/n' char and places into line 
+
+  // make a new local report 
+  inventory_report::report * my_report = new inventory_report::report();
+
   while (in_file.getline(line,line_size))
   {
     std::string line_string(line);
@@ -70,47 +78,54 @@ int main(int argc, char** argv)
     
     if (token == "FoodItem")
     {
-      food_item item = parse_food_item(line_string); 
-      // do something with the food_item
-      // ...
+      // parse the footitem and add it to the report
+      parse_food_item(my_report, line_string);
     }
     else if (token == "Warehouse")
     {
+      std::string warehouse_name = parse_warehouse (line_string);
 
-      warehouse w = parse_warehouse (line_string);
-      // do something with the warehouse...
-
+      // add a new warehouse to the report
+      my_report->add_warehouse(warehouse_name);
     }
     else if (token == "Start")
     {
-      boost::gregorian::date date = parse_start_date(line);
-      // do something with the date
-      // ...
+      std::string date = parse_start_date(line);
+
+      // set the date to the start date of the report
+      my_report->set_date(date);
     }
     else if (token == "Receive:")
     {
-      // we will probably want to do all the work inside the method
-      // or we can return a vector or array with the info
-      parse_receive (line_string);
+      // parse receive and adds the shipment to the warehouse in the report
+      parse_receive (my_report, line_string);
     }
     else if (token == "Request:")
     {
-      // we will probably want to do all the work inside the method
-      // or we can return a vector or array with the info
-      parse_request (line_string);
+      // parse request and remove items from the warehouse in the report
+      parse_request (my_report, line_string);
     }
     else if (token == "Next")
     {
-      // don't have to parse, just have to do the next day actions
+      // do the end of the day actions 
+      my_report->end_day();
+
+      // do the start of the day actions
+      my_report->start_day();
     }
     else if (token == "End")
     {
-      // do end of day then break
-      
+      // do end of day actions
+      my_report->end_day();
+
       break;
     }
     
   }
+
+  std::cout << print_report(my_report) << std::endl;
+
+  // delete report
   
   // file must be closed when done
   in_file.close();
@@ -119,43 +134,46 @@ int main(int argc, char** argv)
 /**
  * Takes in a line from transaction report and parses it into a food_item object 
  */
-food_item parse_food_item (const std::string & line)
+void parse_food_item (inventory_report::report * r, const std::string & line)
 { 
   std::string upc = get_next_token(line, "UPC Code: ");
   std::string shelf_life = get_next_token(line, "Shelf life: ");
   std::string name = get_till_end_of_line(line, "Name: ");
   int life = std::atoi(shelf_life.c_str());
-  
-  return food_item(name, upc, life);
+
+  // add food item to the report
+  r->add_food_item(name, upc, life);
 }
 
 /**
- * Parses a line which includes the start date and returns a start date
- */ 
-boost::gregorian::date parse_start_date (const std::string & line)
-{
-  std::string date_string = get_next_token(line, "Start Date: ");
-  boost::gregorian::date my_date(boost::gregorian::from_us_string(date_string));
-  
-  return my_date;
-}
-
-/**
- * Takes in a line from transaction report and parses it into a warehouse object 
+ * Takes in a line from transaction report and parses out the warehouse name
  */
-warehouse parse_warehouse (const std::string & line)
+std::string parse_warehouse (const std::string & line)
 { 
   // parse the line for the warehouse name
   std::string name = get_till_end_of_line(line, "Warehouse - ");
 
-  // return the warehouse object
-  return warehouse(name);
+  // return the warehouse name
+  return name;
 }
 
 /**
- * Takes in a line from transaction report and parses the shipment 
+ * Parses a line which includes the start date and returns a string of the start date
+ */ 
+std::string parse_start_date (const std::string & line)
+{
+  // parse the line for the start date
+  std::string date = get_next_token(line, "Start Date: ");
+  
+  // return the start date 
+  return date;
+}
+
+/**
+ * Takes in a line from transaction report. Parses the shipment and adds
+ * it to the indicated warehouse in the report.
  */
-void parse_receive (const std::string & line)
+void parse_receive (inventory_report::report * r, const std::string & line)
 { 
   // parse the line for the upc number
   std::string upc = get_next_token(line, "Receive: ");
@@ -164,12 +182,15 @@ void parse_receive (const std::string & line)
   int quantity = std::atoi(shipment_size.c_str());
   // parse the line for the warehouse name 
   std::string warehouse_name = get_next_token(line, " ");
+
+  // add shipment to the warehouse in the report
+  r->receive_at_warehouse(warehouse_name, upc, quantity);
 }
 
 /**
  * Takes in a line from transaction report and parses the request
  */
-void parse_request (const std::string & line)
+void parse_request (inventory_report::report * r, const std::string & line)
 { 
   // parse the line for the upc number
   std::string upc = get_next_token(line, "Request: ");
@@ -178,6 +199,68 @@ void parse_request (const std::string & line)
   int quantity = std::atoi(request_size.c_str());
   // parse the line for the warehouse name 
   std::string warehouse_name = get_next_token(line, " ");
+
+  // request from the report
+  r->request_from_warehouse(warehouse_name, upc, quantity);
+}
+
+/**
+ * Returns a string to print to the console of the report required for this assignment. 
+ * Finds the underfilled products, wellstocked products, and the most popular products.
+ */
+std::string print_report(inventory_report::report * r)
+{
+  // report header
+  std::string result = report_by;
+
+  // underfilled items
+  result += underfilled_orders;
+  result += request_underfilled_items(r);
+  result += "\n";
+
+  // well stocked items
+  result += well_stocked_products;
+  result += request_well_stocked_items(r);
+  result += "\n";
+
+  // most popular products
+  result += most_popular_products;
+  result += request_most_popular_products(r);
+
+  return result;
+}
+
+/**
+ * Helper method to print report. Returns a string of the underfilled items. 
+ * Underfilled orders are a list of the orders (in sorted order by date first, 
+ * UPC second, no duplicates) that could not be partially or fully satisfied.
+ */
+std::string request_underfilled_items(inventory_report::report * r)
+{
+
+}
+
+/**
+ * Helper method to print report. Returns a string of the well stocked items. 
+ * Well stocked items are a a list of the products (in sorted order by UPC) that 
+ * have positive quantities in at least two warehouses (at the end of the simulation).
+ */
+std::string request_well_stocked_items(inventory_report::report * r)
+{
+
+}
+
+/**
+ * Helper method to print report. Returns a string of the most popular items. 
+ * The most popular products are the top three most requested products; the most popular products 
+ * have the highest total quantity in the data file requests.  If items have identical 
+ * request quantities, break ties using UPCs (lower UPC comes first).  If you receive a 
+ * data file with less than three products, report them in popularity order.  For each 
+ * food item, print out its total requested quantity, UPC, and name.
+ */
+std::string request_most_popular_products(inventory_report::report * r)
+{
+
 }
 
 /**
