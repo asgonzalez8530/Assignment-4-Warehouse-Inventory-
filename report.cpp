@@ -53,7 +53,8 @@ namespace inventory_report
    */ 
   void report::add_warehouse(const std::string & name)
   {
-  
+    // map the name to the ware house object in warehouses
+    warehouses->insert(std::pair<std::string, warehouse> (name, warehouse(name)));   
   }
   
   /**
