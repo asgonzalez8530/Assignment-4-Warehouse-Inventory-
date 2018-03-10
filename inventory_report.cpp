@@ -9,17 +9,19 @@
  *   executalbe. 
  */
 
-#include "warehouse.h"
-#include "food_item.h"
-#include <boost/date_time/gregorian/gregorian.hpp>
+// #include "warehouse.h"
+// #include "food_item.h"
+// #include <boost/date_time/gregorian/gregorian.hpp>
+
+#include "report.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 
-using namespace inventory_report;
+// using namespace inventory_report;
 
 food_item parse_food_item (const std::string & line);
-warehouse parse_warehouse (const std::string & line);
+const std::string & parse_warehouse (const std::string & line);
 void parse_receive (const std::string & line);
 void parse_request (const std::string & line);
 std::string get_next_token(const std::string & line, 
@@ -50,6 +52,9 @@ int main(int argc, char** argv)
   {
     return 0;
   }
+
+  // the report object that will handle the processing of the file
+  inventory_report::report * my_report = new report();
   
   // get first command line argument, which should be the file to be processed
   char* file = argv[1];
@@ -71,21 +76,20 @@ int main(int argc, char** argv)
     if (token == "FoodItem")
     {
       food_item item = parse_food_item(line_string); 
-      // do something with the food_item
+      // do something with the food item
       // ...
     }
     else if (token == "Warehouse")
     {
-
-      warehouse w = parse_warehouse (line_string);
-      // do something with the warehouse...
-
+      // parse the warehouse name ad add it to the report
+      std::string warehouse_name = parse_warehouse(my_report, line_string);
+      my_report->add_warehouse(warehouse_name);
     }
     else if (token == "Start")
     {
-      boost::gregorian::date date = parse_start_date(line);
-      // do something with the date
-      // ...
+      // parse the date and add set it as the date of the report
+      string date = parse_start_date(line);
+      my_report->set_date(date);
     }
     else if (token == "Receive:")
     {
@@ -101,7 +105,8 @@ int main(int argc, char** argv)
     }
     else if (token == "Next")
     {
-      // don't have to parse, just have to do the next day actions
+      my_report->end_day();
+      my_report->start_day();
     }
     else if (token == "End")
     {
@@ -114,6 +119,10 @@ int main(int argc, char** argv)
   
   // file must be closed when done
   in_file.close();
+
+  // clean up our report object
+  delete my_report;
+  my_report = NULL;
 }
 
 /**
@@ -130,26 +139,24 @@ food_item parse_food_item (const std::string & line)
 }
 
 /**
- * Parses a line which includes the start date and returns a start date
+ * Parses a line which includes the start date and returns the date as a string
  */ 
-boost::gregorian::date parse_start_date (const std::string & line)
+std::string & parse_start_date (const std::string & line)
 {
   std::string date_string = get_next_token(line, "Start Date: ");
-  boost::gregorian::date my_date(boost::gregorian::from_us_string(date_string));
   
-  return my_date;
+  return date_string;
 }
 
 /**
  * Takes in a line from transaction report and parses it into a warehouse object 
  */
-warehouse parse_warehouse (const std::string & line)
+const std::string & parse_warehouse (const std::string & line)
 { 
   // parse the line for the warehouse name
   std::string name = get_till_end_of_line(line, "Warehouse - ");
 
-  // return the warehouse object
-  return warehouse(name);
+  return name;
 }
 
 /**

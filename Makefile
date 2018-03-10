@@ -13,7 +13,7 @@
 # Compiles a.out file required for assignment submission.
 ##
 a.out: food_item.o warehouse.o report.o inventory_report.cpp
-	g++ food_item.o warehouse.o inventory_report.cpp -lboost_date_time
+	g++ food_item.o warehouse.o report.o inventory_report.cpp
 
 ###
 # compiles report class to .o file for partial compilation
