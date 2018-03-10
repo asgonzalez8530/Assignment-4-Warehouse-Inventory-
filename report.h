@@ -33,6 +33,7 @@ namespace inventory_report
   
   // a shorter name for a boost date
   typedef boost::gregorian::date boost_date; 
+  typedef boost::gregorian::date_duration boost_date_duration;
   
   // warehouse_map maps a warehouses names to warehouse objects
   typedef std::map<std::string, warehouse> name_warehouse_map;

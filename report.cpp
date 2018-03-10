@@ -88,7 +88,7 @@ namespace inventory_report
     // get reference to the warehouse safely
     if (warehouses->count(warehouse_name))
     {
-      *house = warehouses->at(warehouse_name);
+      house = &(warehouses->at(warehouse_name));
     }
    
     // lookup the shelflife for this food item
@@ -195,7 +195,7 @@ namespace inventory_report
           
         }
       }
-      // pop the front of the list
+      // pop the front of the list and return to top to process next request
       requests->pop_front();
     }
     
@@ -209,7 +209,42 @@ namespace inventory_report
    */
   void report::start_day()
   {
-  
+    if (date == NULL)
+    {
+      return;
+    } 
+    
+    //advance date by one day
+    boost_date_duration one_day(1);
+    boost_date new_date = *date + one_day;
+    
+    // delete the date that is on the heap (avoid memory leak)
+    delete date;
+    date = NULL;
+    
+    // now that date is cleaned, lets create a date on the heap using new_date
+    date = new boost_date(new_date);
+    
+    // for each warehouse
+    
+    // get an iterator for the warehouses map that points to the beginning
+    name_warehouse_map::iterator it = warehouses->begin();
+    // and another for the end
+    name_warehouse_map::iterator end = warehouses->end();
+    
+    for (it; it != end; it++)
+    {
+      // get a pointer to the actual warehouse
+      warehouse * house = &(it->second);
+      
+      // update its day
+      house->update_day();
+      
+      // take care of its expire inventory
+      house->remove_expired_inventory();
+        
+    }
+    
   }
   
   /**
