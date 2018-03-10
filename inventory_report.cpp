@@ -68,7 +68,7 @@ int main(int argc, char** argv)
   std::string word_delimiter = " ";
   // getline reads up to line_size or until '/n' char and places into line 
 
-  // make a new local report 
+  // make a new report object on the heap 
   inventory_report::report * my_report = new inventory_report::report();
 
   while (in_file.getline(line,line_size))
@@ -125,7 +125,9 @@ int main(int argc, char** argv)
 
   std::cout << print_report(my_report) << std::endl;
 
-  // delete report
+  // clean up report 
+  delete my_report;
+  my_report = NULL;
   
   // file must be closed when done
   in_file.close();
@@ -264,8 +266,8 @@ std::string request_most_popular_products(inventory_report::report * r)
 }
 
 /**
- * Searches line for search_string and returns the next token (delimited by ' ')
- * contianed in line
+ * Searches line for search_string and returns the token (delimited by ' ')
+ * immediately following search_string contianed in line
  */
 std::string get_next_token(const std::string & line, 
   const std::string & search_string)
