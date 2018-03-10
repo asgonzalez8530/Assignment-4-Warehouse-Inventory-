@@ -17,7 +17,7 @@
 #include <string>
 #include <map>
 #include <list>
-
+#include <set>
 
 namespace inventory_report
 {
@@ -43,9 +43,9 @@ namespace inventory_report
   // request_list is a list of shipment_request structs
   typedef std::list<shipment_request> request_list;
   
-  // underfilled_map maps a date to a list of item upc's which were underfilled
+  // underfilled_map maps a date to a set of item upc's which were underfilled
   // that day
-  typedef std::map<boost_date, std::list<std::string> > date_items_map;
+  typedef std::map<boost_date, std::set<std::string> > date_items_map;
   
   // maps an item to the number of times it was requested
   typedef std::map<std::string, long long> upc_number_map;

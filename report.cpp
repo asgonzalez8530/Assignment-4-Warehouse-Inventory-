@@ -144,7 +144,62 @@ namespace inventory_report
    */
   void report::end_day()
   {
-  
+    if (date == NULL)
+    {
+      return;
+    } 
+    
+    while (!requests->empty())
+    {
+      // get a pointer to the first item of the list
+      request_list::iterator request = requests->begin();
+      
+      // process the request
+      // get the warehouse for this request
+      warehouse * house;
+    
+      // get reference to the warehouse safely
+      if (warehouses->count(request->name))
+      {
+        house = &(warehouses->at(request->name));
+      }
+      
+      // follow the pointer to the warehouse and remove the inventory. Story the
+      // amount removed to check for an underfilled order
+      int amount_removed = house->remove_inventory(request->upc,
+        request->quantity);
+      
+      // make sure full request was fulfilled
+      if (amount_removed != request->quantity)
+      {
+        // wasn't completely fulfilled, need to track it as an underfilled item  
+        if (underfilled_orders->count(*date))
+        {
+          // date is already in underfilled_orders
+          // get the set
+          std::set<std::string> * orders = &(underfilled_orders->at(*date));
+          
+          // add the upc to the set of underfilled orders on this date
+          orders->insert(request->upc);
+        }
+        else
+        {
+          // date is not already in underfilled_orders create entry          
+          
+          std::set<std::string> orders = std::set<std::string>();
+          orders.insert(request->upc);
+          
+          // date is not already in underfilled_orders create entry
+          underfilled_orders->insert(
+            std::pair<boost_date, std::set<std::string> > (*date, orders)); 
+          
+        }
+      }
+      // pop the front of the list
+      requests->pop_front();
+    }
+    
+    
   }
   
   /**
