@@ -64,6 +64,6 @@ clean:
 ###
 # Zips files for assignment into a single compressed folder ready for turning in
 ##
-zip: Makefile warehouse.h food_item.h warehouse.cpp food_item.cpp inventory_report.cpp
-	zip cs3505-assignment4.zip Makefile warehouse.h food_item.h warehouse.cpp food_item.cpp inventory_report.cpp
+zip: Makefile warehouse.h food_item.h warehouse.cpp food_item.cpp inventory_report.cpp README.txt
+	zip cs3505-assignment4.zip Makefile warehouse.h food_item.h warehouse.cpp food_item.cpp inventory_report.cpp README.txt
 
