@@ -257,7 +257,7 @@ namespace inventory_report
    *
    * "07/20/1969 0123456789 Tang"
    */
-  std::vector<std::string> request_underfilled_orders()
+  std::vector<std::string> report::request_underfilled_orders()
   {
   
   }
@@ -274,7 +274,7 @@ namespace inventory_report
    *
    * "500 0123456789 Hot Wings"
    */
-  std::vector<std::string> request_popular_items()
+  std::vector<std::string> report::request_popular_items()
   {
   
   }
@@ -289,7 +289,7 @@ namespace inventory_report
    * 
    * "0123456789 Hello Kitty Erasers"
    */
-   std::vector<std::string> request_well_stocked_items()
+   std::vector<std::string> report::request_well_stocked_items()
    {
    
    }
