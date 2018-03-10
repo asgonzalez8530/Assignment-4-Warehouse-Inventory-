@@ -138,13 +138,6 @@ boost::gregorian::date parse_start_date (const std::string & line)
   boost::gregorian::date my_date(boost::gregorian::from_us_string(date_string));
   
   return my_date;
-  
-  /*
-  std::string date_delimiter = "/";
-  std::string month = 
-  s.erase(0, s.find(delimiter) + delimiter.length());
-  return my_date;
-  */
 }
 
 /**
