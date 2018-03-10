@@ -36,15 +36,16 @@ namespace inventory_report
    */
   report::~report()
   {
-  
+    clean();
   }
   
   /**
-   * Sets the date of this warehouse to start_date
+   * Takes a string which contains a delimited date in the US format and sets 
+   * the date of this warehouse to start_date
    */
   void report::set_date(const std::string & start_date)
   {
-  
+    date = new boost_date(boost::gregorian::from_us_string(start_date));
   }
   
   /**
@@ -112,7 +113,26 @@ namespace inventory_report
    */ 
   void report::clean()
   {
-  
+    delete warehouses;
+    warehouses = NULL;
+    
+    delete food_items;
+    food_items = NULL;
+    
+    delete requests;
+    requests = NULL;
+    
+    delete underfilled_orders;
+    underfilled_orders = NULL;
+    
+    delete popular_products;
+    popular_products = NULL;
+    
+    if (date != NULL)
+    {
+      delete date;
+      date = NULL;
+    }
   }
   
 }
