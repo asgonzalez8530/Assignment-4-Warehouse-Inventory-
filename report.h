@@ -48,7 +48,7 @@ namespace inventory_report
   typedef std::map<boost_date, std::list<std::string> > date_items_map;
   
   // maps an item to the number of times it was requested
-  typedef std::map<std::string, int> upc_number_map;
+  typedef std::map<std::string, long long> upc_number_map;
   
   
   /**
@@ -71,7 +71,8 @@ namespace inventory_report
     // maps a date to a list of upc's which are underfilled orders from that day
     date_items_map * underfilled_orders;
     
-    // maps upcs to the number of times they have been requested
+    // maps upcs to the number of times they have been requested, all products 
+    // appear in this map
     upc_number_map * popular_products;
     
     // the current date. NULL if not yet specified

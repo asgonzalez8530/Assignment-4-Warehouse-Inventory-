@@ -65,6 +65,10 @@ namespace inventory_report
   {
     food_items->insert(std::pair<std::string, food_item>(upc, 
       food_item(name, upc, shelf_life)));
+    
+    // all products will appear in popular_products even if they haven't been
+    // requested before
+    popular_products->insert(std::pair<std::string, long long>(upc, 0));
   }
   
   /**
@@ -74,7 +78,33 @@ namespace inventory_report
   void report::receive_at_warehouse(const std::string & warehouse_name,
     const std::string & upc, int quantity)
   {
-  
+    if (date == NULL)
+    {
+      return;
+    }
+    
+    warehouse * house;
+    
+    // get reference to the warehouse safely
+    if (warehouses->count(warehouse_name))
+    {
+      *house = warehouses->at(warehouse_name);
+    }
+   
+    // lookup the shelflife for this food item
+    int shelf_life = 0;
+    
+    // get reference to food_item safely
+    if (food_items->count(upc))
+    {
+      food_item item = food_items->at(upc);
+      shelf_life = item.get_shelf_life();
+    }
+    
+    // add inventory to the warehouse
+    house->add_inventory(upc, quantity, shelf_life);
+    
+    
   }
   
   /** 
@@ -87,7 +117,25 @@ namespace inventory_report
   void report::request_from_warehouse(const std::string & warehouse_name,
     const std::string & upc, int quantity)
   {
-  
+    if (date == NULL)
+    {
+      return;
+    }    
+    
+    // update popular_products
+    if (popular_products->count(upc))
+    {
+      // get an iterator which points to the product 
+      upc_number_map::iterator it= popular_products->find(upc);
+      // follow the iterator to the second element of the pair and add quantity
+      // to it.
+      it->second += quantity;
+    }
+    
+    // add the request to the pending requests
+    shipment_request request = {warehouse_name, upc, quantity};
+    requests->push_back(request);
+    
   }
   
   /**

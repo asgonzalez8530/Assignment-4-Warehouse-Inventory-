@@ -18,7 +18,7 @@ a.out: food_item.o warehouse.o report.o inventory_report.cpp
 ###
 # compiles report class to .o file for partial compilation
 ##
-report.o: food_item.h warehouse.h
+report.o: food_item.h warehouse.h report.h report.cpp
 	g++ -c report.cpp -lboost_date_time
 
 ###
@@ -32,7 +32,7 @@ food_item.o: food_item.h food_item.cpp
 ##
 warehouse.o: warehouse.h warehouse.cpp
 	g++ -c warehouse.cpp
-
+  
 ###
 # Compiles an executable file named debugger which is the same as the default 
 # rule with the addition of debugging flags being turned on
