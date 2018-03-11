@@ -344,7 +344,6 @@ std::string get_next_token(const std::string & line,
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string)
 {
-  
   // this will return the position of search_string[0] in the above string
   int position = line.find(search_string);
   
@@ -352,13 +351,14 @@ std::string get_till_end_of_line(const std::string & line,
   // string
   std::string token = "";
   int i = position + search_string.length();
+
   // go untill we find a space
-  while (line[i] != '\n' && i == line.length())
+  while (line[i] != '\n' && i != line.length())
   {
     token += line[i];
     i++;
   }
-  
+
   return token;
 }
 
