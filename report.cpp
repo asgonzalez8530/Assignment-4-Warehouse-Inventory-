@@ -262,7 +262,52 @@ namespace inventory_report
    */
   std::vector<std::string> report::request_underfilled_orders()
   {
-  
+    // vector that we will build up and return at the end
+    std::vector<std::string> result;
+
+    // make an iterator to loop through underfilled_orders
+    date_items_map::iterator it = underfilled_orders->begin();
+    date_items_map::iterator end = underfilled_orders->end();
+
+    for(it; it != end; it++)
+    {
+      // pull out the date and convert to a string
+      boost_date d = it->first;
+      std::string entry = "";
+      entry.push_back(d.month());
+      entry.push_back('/');
+      entry.push_back(d.day());
+      entry.push_back('/');
+      entry.push_back(d.year());
+
+      // pull out the set of orders that correspond to that date
+      std::set<std::string> * orders = &(it->second);
+      std::string order_results = "";
+      
+      // make an iterator to loop through the orders
+      std::set<std::string>::iterator it2 = orders->begin();
+      std::set<std::string>::iterator end2 = orders->end();    
+
+      for (it2; it2 != end2; it2++)
+      {
+        // get the upc
+        std::string upc = *it2;
+
+        // map the upc to the item name
+        std::string name = food_items->at(upc).get_name();
+
+        // insert the upc and item name into the order_result string
+        order_results += upc + name;
+      }
+
+      // add the order information to the date entry 
+      entry += order_results;
+
+      // add the order entry to the end of the vector
+      result.push_back(entry);
+    }
+
+    return result;
   }
    
   /**

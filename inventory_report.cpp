@@ -235,7 +235,24 @@ std::string print_report(inventory_report::report * r)
  */
 std::string request_underfilled_items(inventory_report::report * r)
 {
+  // build up the report that we will return at the end
+  std::string report = "";
+  // get the vector report
+  std::vector<std::string> underfilled_order_report = r->request_underfilled_orders();
 
+  // make an iterator to loop through the entries
+  std::vector<std::string>::iterator it = underfilled_order_report.begin();
+  std::vector<std::string>::iterator end = underfilled_order_report.end();
+
+  for(it; it != end; it++)
+  {
+    // dereference the iterator to get the string stored at that location
+    report += *it;
+    // insert a new line after the report entry
+    report += "\n";
+  }
+
+  return report;
 }
 
 /**
@@ -245,7 +262,24 @@ std::string request_underfilled_items(inventory_report::report * r)
  */
 std::string request_well_stocked_items(inventory_report::report * r)
 {
+  // build up the report that we will return at the end
+  std::string report = "";
+  // get the vector report
+  std::vector<std::string> underfilled_order_report = r->request_well_stocked_items();
 
+  // make an iterator to loop through the entries
+  std::vector<std::string>::iterator it = underfilled_order_report.begin();
+  std::vector<std::string>::iterator end = underfilled_order_report.end();
+
+  for(it; it != end; it++)
+  {
+    // dereference the iterator to get the string stored at that location
+    report += *it;
+    // insert a new line after the report entry
+    report += "\n";
+  }
+
+  return report;
 }
 
 /**
@@ -258,7 +292,24 @@ std::string request_well_stocked_items(inventory_report::report * r)
  */
 std::string request_most_popular_products(inventory_report::report * r)
 {
+  // build up the report that we will return at the end
+  std::string report = "";
+  // get the vector report
+  std::vector<std::string> underfilled_order_report = r->request_popular_items();
 
+  // make an iterator to loop through the entries
+  std::vector<std::string>::iterator it = underfilled_order_report.begin();
+  std::vector<std::string>::iterator end = underfilled_order_report.end();
+
+  for(it; it != end; it++)
+  {
+    // dereference the iterator to get the string stored at that location
+    report += *it;
+    // insert a new line after the report entry
+    report += "\n";
+  }
+
+  return report;
 }
 
 /**
