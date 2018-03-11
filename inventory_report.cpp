@@ -107,7 +107,7 @@ int main(int argc, char** argv)
     {
       // parse request and remove items from the warehouse in the report
       parse_request (my_report, line_string);
-      std::cout << "parsed request" <<std::endl;
+     
     }
     else if (token == "Next")
     {
@@ -157,11 +157,9 @@ void parse_food_item (inventory_report::report * r, const std::string & line)
  */
 std::string parse_warehouse (const std::string & line)
 { 
-  std::cout << "hereeeeee!!!" <<std::endl;
+
   // parse the line for the warehouse name
   std::string name = get_till_end_of_line(line, "Warehouse - ");
-
-  std::cout << name <<std::endl;
 
   // return the warehouse name
   return name;
@@ -204,13 +202,10 @@ void parse_request (inventory_report::report * r, const std::string & line)
   inventory_report::shipment_request request = 
     get_upc_quantity_warehouse(line, "Request: ");
     
-    std::cout << request.name <<std::endl;
-    std::cout << request.upc <<std::endl;
-    std::cout << request.quantity <<std::endl;
 
   // add shipment to the warehouse in the report
   r->receive_at_warehouse(request.name, request.upc, request.quantity);
-  std::cout << "passed??" <<std::endl;
+  
 }
 
 /**
@@ -424,11 +419,12 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
   //as long as we aren't at the end of the line
   while (i < request_data.length())
   {
-    
+
     // if we find \r or \n character stop adding to ss
-    if (request_data[i] == ' ' || request_data[i] == '\r' || request_data[i] == '\n')
+    if (request_data[i] == ' ')
     {
-      vect.push_back(ss.str());
+      std::string token = ss.str();
+      vect.push_back(token);
       ss.str("");
       ss.clear();
       i++;
@@ -439,6 +435,10 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
     ss << request_data[i];
     i++;  
   }
+  
+  // make sure the last token is pushed to vector
+  std::string token = ss.str();
+  vect.push_back(token);
   
   std::vector<std::string>::iterator it = vect.begin();
   std::vector<std::string>::iterator end = vect.end();
@@ -466,7 +466,7 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
   
   std::string warehouse_name = ss.str();
 
-  inventory_report::shipment_request request= {warehouse_name, upc, quant};
+  inventory_report::shipment_request request = {warehouse_name, upc, quant};
 
   return request;
 }
