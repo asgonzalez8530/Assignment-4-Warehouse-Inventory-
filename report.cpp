@@ -10,6 +10,9 @@
 
 #include "report.h"
 
+//delete when done debugging
+#include <iostream>
+
 namespace inventory_report
 {
 
@@ -62,8 +65,11 @@ namespace inventory_report
    */ 
   void report::add_warehouse(const std::string & name)
   {
+    warehouse house = warehouse(name);
+
     // map the name to the ware house object in warehouses
-    warehouses->insert(std::pair<std::string, warehouse> (name, warehouse(name)));   
+    warehouses->insert(std::pair<std::string, warehouse> (name, house));   
+
   }
   
   /**
@@ -72,8 +78,12 @@ namespace inventory_report
   void report::add_food_item(const std::string & name, const std::string & upc, 
     int shelf_life)
   {
-    food_items->insert(std::pair<std::string, food_item>(upc, 
-      food_item(name, upc, shelf_life)));
+    
+    std::pair<std::string, food_item> upc_item_pair(upc, food_item(name, upc, shelf_life));
+    
+    
+    food_items->insert(std::pair<std::string, food_item>(upc_item_pair));
+      
     
     // all products will appear in popular_products even if they haven't been
     // requested before
@@ -389,7 +399,7 @@ namespace inventory_report
       
       // put the string together
       std::stringstream ss;
-      ss << req << upc << name; 
+      ss << req << " " << upc << name; 
       
       // add it to the vector
       return_vector.push_back(ss.str());
