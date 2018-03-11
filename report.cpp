@@ -10,6 +10,9 @@
 
 #include "report.h"
 
+
+
+
 namespace inventory_report
 {
 
@@ -276,9 +279,68 @@ namespace inventory_report
    */
   std::vector<std::string> report::request_popular_items()
   {
-  
-  }
     
+    
+    std::set<popular_product, popularity_comp> popularity_set = 
+      std::set<popular_product, popularity_comp> ();
+    
+    // create a scope for these iterators
+    {
+      // add all items to a set
+      upc_number_map::iterator item = popular_products->begin();
+      upc_number_map::iterator end = popular_products->end();
+    
+      for (item; item != end; item++)
+      {
+        // get the upc
+        std::string upc = item->first;
+        // get the number of requests
+        long long requests = item->second;
+      
+        // add it to products
+        popular_product product = { upc, requests };
+      
+        popularity_set.insert(product);
+      }
+    }
+    
+    // this set now contains all items and is sorted in decending order
+    
+    std::vector<std::string> return_vector;
+    
+    // get the first three items
+    // add all items to a set
+    std::set<popular_product, popularity_comp>::iterator item = 
+      popularity_set.begin();
+      
+    std::set<popular_product, popularity_comp>::iterator end = 
+      popularity_set.end();
+    
+    std::set<popular_product, popularity_comp>::iterator third_item = item;
+    third_item ++;
+    third_item ++;
+    third_item ++;
+    
+    for (item; item != end && item != third_item; item++)
+    {
+      // get the item
+      std::string upc = item->upc;
+      long long req = item->requests;
+      
+      // get the name of this item
+      std::string name = food_items->at(upc).get_name();
+      
+      // put the string together
+      std::stringstream ss;
+      ss << req << upc << name; 
+      
+      // add it to the vector
+      return_vector.push_back(ss.str());
+    }
+    
+    return return_vector;
+  }
+  
   /**
    * Returns a vector containing all items which are currently stocked in at
    * least two warehouses. Strings will be in the format UPC ITEM_NAME

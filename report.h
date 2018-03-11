@@ -19,6 +19,8 @@
 #include <list>
 #include <set>
 #include <vector>
+#include <sstream>
+
 
 namespace inventory_report
 {
@@ -28,6 +30,28 @@ namespace inventory_report
     std::string name;
     std::string upc;
     int quantity;
+  };
+  
+  struct popular_product
+  {
+    std::string upc;
+    long long requests;
+  }; 
+    
+  // define a way for a set to order these products in decending order
+  // adapted from http://www.coderslexicon.com/ordering-sets-in-c/ 
+  struct popularity_comp 
+  {
+    bool operator() (const popular_product & lhs, 
+      const popular_product & rhs) const
+    {
+      if (lhs.requests == rhs.requests)
+      {
+        return lhs.upc < rhs.upc;
+      }
+      
+      return lhs.requests > rhs.requests;
+    }
   };
   
   // typedefs to make our life easier
