@@ -392,14 +392,14 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
   std::cout << position << std::endl;
   int i = position + upc.length();
   std::cout << i << std::endl;
-  std::string new_string = upc.substr(i, line.length());
+  std::string new_string = line.substr(i, line.length());
 
   std::cout << new_string << std::endl;
 
   std::string quantity = get_next_token(new_string, upc + " ");
   position = line.find(quantity);
   i = position + quantity.length();
-  new_string = upc.substr(i, line.length());
+  new_string = line.substr(i, line.length());
 
   std::cout << new_string << std::endl;
 
