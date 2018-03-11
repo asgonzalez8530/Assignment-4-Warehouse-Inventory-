@@ -106,6 +106,7 @@ int main(int argc, char** argv)
     {
       // parse request and remove items from the warehouse in the report
       parse_request (my_report, line_string);
+      std::cout << "parsed request" <<std::endl;
     }
     else if (token == "Next")
     {
@@ -143,6 +144,7 @@ void parse_food_item (inventory_report::report * r, const std::string & line)
   std::string upc = get_next_token(line, "UPC Code: ");
   std::string shelf_life = get_next_token(line, "Shelf life: ");
   std::string name = get_till_end_of_line(line, "Name: ");
+
   int life = std::atoi(shelf_life.c_str());
 
   // add food item to the report
@@ -154,8 +156,11 @@ void parse_food_item (inventory_report::report * r, const std::string & line)
  */
 std::string parse_warehouse (const std::string & line)
 { 
+  std::cout << "hereeeeee!!!" <<std::endl;
   // parse the line for the warehouse name
   std::string name = get_till_end_of_line(line, "Warehouse - ");
+
+  std::cout << name <<std::endl;
 
   // return the warehouse name
   return name;
@@ -197,9 +202,14 @@ void parse_request (inventory_report::report * r, const std::string & line)
    // parse line for upc, quantity, and warehouse name
   inventory_report::shipment_request request = 
     get_upc_quantity_warehouse(line, "Request: ");
+    
+    std::cout << request.name <<std::endl;
+    std::cout << request.upc <<std::endl;
+    std::cout << request.quantity <<std::endl;
 
   // add shipment to the warehouse in the report
   r->receive_at_warehouse(request.name, request.upc, request.quantity);
+  std::cout << "passed??" <<std::endl;
 }
 
 /**
@@ -344,6 +354,8 @@ std::string get_next_token(const std::string & line,
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string)
 {
+  std::cout << search_string <<std::endl;
+
   // this will return the position of search_string[0] in the above string
   int position = line.find(search_string);
   
@@ -353,11 +365,14 @@ std::string get_till_end_of_line(const std::string & line,
   int i = position + search_string.length();
 
   // go untill we find a space
-  while (line[i] != '\n' && i != line.length())
+  while (line[i] != '\n' && i != line.length() && line[i] != '\r')
   {
+    std::cout << token <<std::endl;
     token += line[i];
     i++;
   }
+
+  std::cout << token <<std::endl;
 
   return token;
 }
@@ -372,8 +387,23 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
 { 
   // we want the upc, quantity, and warehouse name from this line
   std::string upc = get_next_token(line, search_string);
-  std::string quantity = get_next_token(line, upc + " ");
-  std::string warehouse_name = get_till_end_of_line(line, quantity + " ");
+  std::cout << "here" << std::endl;
+  int position = line.find(upc);
+  std::cout << position << std::endl;
+  int i = position + upc.length();
+  std::cout << i << std::endl;
+  std::string new_string = upc.substr(i, line.length());
+
+  std::cout << new_string << std::endl;
+
+  std::string quantity = get_next_token(new_string, upc + " ");
+  position = line.find(quantity);
+  i = position + quantity.length();
+  new_string = upc.substr(i, line.length());
+
+  std::cout << new_string << std::endl;
+
+  std::string warehouse_name = get_till_end_of_line(new_string, quantity + " ");
 
   // convert string quantity to int
   int quant = std::atoi(quantity.c_str());
