@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <sstream>
 
 // pre defined methods
 void parse_food_item (inventory_report::report * r, const std::string & line);
@@ -329,22 +330,39 @@ std::string request_most_popular_products(inventory_report::report * r)
 std::string get_next_token(const std::string & line, 
   const std::string & search_string)
 {
-  // this will return the position of search_string[0] in the above string
-  int position = line.find(search_string);
+    
+  // get the first char position of the search_string
+  int first_char_position = line.find(search_string);
+  int i = first_char_position;
+  int j = 0;
   
-  // we want the upc, which should start in the character after the search 
-  // string
-  std::string token = "";
-  int i = position + search_string.length();
-
-  // go untill we find a space
-  while (line[i] != ' ' && line[i] != '\n' && i != line.length())
+  // addvance i untill we get past search_string
+  while (j < search_string.length() && line[i] == search_string[j])
   {
-    token += line[i];
     i++;
+    j++;
   }
   
-  return token;
+  //create a stringstream to add chars
+  std::stringstream ss;
+  //as long as we aren't at the end of the line
+  while (i < line.length())
+  {
+    
+    // if we find a space, \r or \n character stop adding to ss
+    if (line[i] == ' ' || line[i] == '\r' || line[i] == '\n')
+    {
+      break;
+    }
+    
+    // add the char to ss then increment i
+    ss << line[i];
+    i++;  
+  }
+  
+  // return a string representation of ss
+  return ss.str();
+ 
 }
 
 /**
@@ -354,27 +372,37 @@ std::string get_next_token(const std::string & line,
 std::string get_till_end_of_line(const std::string & line, 
   const std::string & search_string)
 {
-  std::cout << search_string <<std::endl;
-
-  // this will return the position of search_string[0] in the above string
-  int position = line.find(search_string);
+  // get the first char position of the search_string
+  int first_char_position = line.find(search_string);
+  int i = first_char_position;
+  int j = 0;
   
-  // we want the upc, which should start in the character after the search 
-  // string
-  std::string token = "";
-  int i = position + search_string.length();
-
-  // go untill we find a space
-  while (line[i] != '\n' && i != line.length() && line[i] != '\r')
+  // addvance i untill we get past search_string
+  while (j < search_string.length() && line[i] == search_string[j])
   {
-    std::cout << token <<std::endl;
-    token += line[i];
     i++;
+    j++;
   }
-
-  std::cout << token <<std::endl;
-
-  return token;
+  
+  //create a stringstream to add chars
+  std::stringstream ss;
+  //as long as we aren't at the end of the line
+  while (i < line.length())
+  {
+    
+    // if we find \r or \n character stop adding to ss
+    if (line[i] == '\r' || line[i] == '\n')
+    {
+      break;
+    }
+    
+    // add the char to ss then increment i
+    ss << line[i];
+    i++;  
+  }
+  
+  // return a string representation of ss
+  return ss.str();
 }
 
 
@@ -386,27 +414,57 @@ inventory_report::shipment_request get_upc_quantity_warehouse(const std::string 
   const std::string & search_string)
 { 
   // we want the upc, quantity, and warehouse name from this line
-  std::string upc = get_next_token(line, search_string);
-  std::cout << "here" << std::endl;
-  int position = line.find(upc);
-  std::cout << position << std::endl;
-  int i = position + upc.length();
-  std::cout << i << std::endl;
-  std::string new_string = line.substr(i, line.length());
-
-  std::cout << new_string << std::endl;
-
-  std::string quantity = get_next_token(new_string, upc + " ");
-  position = line.find(quantity);
-  i = position + quantity.length();
-  new_string = line.substr(i, line.length());
-
-  std::cout << new_string << std::endl;
-
-  std::string warehouse_name = get_till_end_of_line(new_string, quantity + " ");
-
-  // convert string quantity to int
-  int quant = std::atoi(quantity.c_str());
+  std::string request_data = get_till_end_of_line(line, search_string);
+  
+  std::vector<std::string> vect;
+  
+  //create a stringstream to add chars
+  std::stringstream ss;
+  int i = 0;
+  //as long as we aren't at the end of the line
+  while (i < request_data.length())
+  {
+    
+    // if we find \r or \n character stop adding to ss
+    if (request_data[i] == ' ' || request_data[i] == '\r' || request_data[i] == '\n')
+    {
+      vect.push_back(ss.str());
+      ss.str("");
+      ss.clear();
+      i++;
+      continue;
+    }
+    
+    // add the char to ss then increment i
+    ss << request_data[i];
+    i++;  
+  }
+  
+  std::vector<std::string>::iterator it = vect.begin();
+  std::vector<std::string>::iterator end = vect.end();
+ 
+  // I know I got at least three items
+  std::string upc = *it;
+  it++;
+  int quant = std::atoi(it->c_str());
+  it++;
+  
+  // all last tokens are part of name
+  ss.str("");
+  ss.clear();
+  while (it != end)
+  {
+    ss << *it;
+    it++;
+    
+    // don't add space to last token
+    if (it != end)
+    {
+      ss << " ";
+    }
+  }
+  
+  std::string warehouse_name = ss.str();
 
   inventory_report::shipment_request request= {warehouse_name, upc, quant};
 
