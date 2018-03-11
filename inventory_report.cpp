@@ -326,7 +326,7 @@ std::string get_next_token(const std::string & line,
   // we want the upc, which should start in the character after the search 
   // string
   std::string token = "";
-  int i = position + search_string.length() + 1;
+  int i = position + search_string.length();
   // go untill we find a space
   while (line[i] != ' ' && line[i] != '\n' && i != line.length())
   {
@@ -351,7 +351,7 @@ std::string get_till_end_of_line(const std::string & line,
   // we want the upc, which should start in the character after the search 
   // string
   std::string token = "";
-  int i = position + search_string.length() + 1;
+  int i = position + search_string.length();
   // go untill we find a space
   while (line[i] != '\n' && i == line.length())
   {

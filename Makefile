@@ -13,13 +13,13 @@
 # Compiles a.out file required for assignment submission.
 ##
 a.out: food_item.o warehouse.o report.o inventory_report.cpp
-	g++ food_item.o warehouse.o report.o inventory_report.cpp -lboost_date_time
+	g++ food_item.o warehouse.o report.o inventory_report.cpp 
 
 ###
 # compiles report class to .o file for partial compilation
 ##
 report.o: food_item.h warehouse.h report.h report.cpp
-	g++ -c report.cpp -lboost_date_time
+	g++ -c report.cpp 
 
 ###
 # Compiles food_item class to .o file for partial compilation
@@ -37,8 +37,8 @@ warehouse.o: warehouse.h warehouse.cpp
 # Compiles an executable file named debugger which is the same as the default 
 # rule with the addition of debugging flags being turned on
 ##
-debugger: warehouse.cpp food_item.cpp inventory_report.cpp warehouse.h food_item.h
-	g++ -o debugger -g warehouse.cpp food_item.cpp inventory_report.cpp 
+debugger: warehouse.cpp food_item.cpp report.cpp inventory_report.cpp warehouse.h food_item.h report.h
+	g++ -o debugger -g warehouse.cpp food_item.cpp report.cpp inventory_report.cpp 
 
 ###
 # Compiles an executable file named tester which combines classes with a tester

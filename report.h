@@ -20,7 +20,7 @@
 #include <set>
 #include <vector>
 #include <sstream>
-
+#include <cstdlib>
 
 namespace inventory_report
 {

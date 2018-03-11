@@ -45,7 +45,16 @@ namespace inventory_report
    */
   void report::set_date(const std::string & start_date)
   {
-    date = new boost_date(boost::gregorian::from_us_string(start_date));
+    if (date != NULL)
+    {
+      delete date;
+      date == NULL;
+    }
+    
+    int month = std::atoi(start_date.substr(0, 2).c_str());
+    int day = std::atoi(start_date.substr(3, 2).c_str());
+    int year = std::atoi(start_date.substr(6,4).c_str());
+    date = new boost_date(year,month,day);
   }
   
   /**

@@ -74,6 +74,7 @@ namespace inventory_report
       /**
        * overloaded operators. All operators compare objects upcs
        */
+       
       bool operator> (const food_item & rhs) const;
       bool operator>= (const food_item & rhs) const;
       bool operator<= (const food_item & rhs) const;
