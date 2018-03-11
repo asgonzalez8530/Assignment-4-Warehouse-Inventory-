@@ -167,7 +167,7 @@ std::string parse_warehouse (const std::string & line)
 std::string parse_start_date (const std::string & line)
 {
   // parse the line for the start date
-  std::string date = get_next_token(line, "Start Date: ");
+  std::string date = get_next_token(line, "Start date: ");
   
   // return the start date 
   return date;
@@ -319,14 +319,14 @@ std::string request_most_popular_products(inventory_report::report * r)
 std::string get_next_token(const std::string & line, 
   const std::string & search_string)
 {
-  
   // this will return the position of search_string[0] in the above string
-  int position = line.find_first_of(search_string);
+  int position = line.find(search_string);
   
   // we want the upc, which should start in the character after the search 
   // string
   std::string token = "";
   int i = position + search_string.length();
+
   // go untill we find a space
   while (line[i] != ' ' && line[i] != '\n' && i != line.length())
   {
@@ -346,7 +346,7 @@ std::string get_till_end_of_line(const std::string & line,
 {
   
   // this will return the position of search_string[0] in the above string
-  int position = line.find_first_of(search_string);
+  int position = line.find(search_string);
   
   // we want the upc, which should start in the character after the search 
   // string
