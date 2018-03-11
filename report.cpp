@@ -91,14 +91,19 @@ namespace inventory_report
     {
       return;
     }
+
+    std::cout << "in receive at warehouse" <<std::endl;
     
     warehouse * house;
     
     // get reference to the warehouse safely
     if (warehouses->count(warehouse_name))
     {
+      std::cout << "got reference to warehouse" <<std::endl;
       house = &(warehouses->at(warehouse_name));
     }
+
+    //std::cout << "got reference to warehouse" <<std::endl;
    
     // lookup the shelflife for this food item
     int shelf_life = 0;
@@ -109,9 +114,13 @@ namespace inventory_report
       food_item item = food_items->at(upc);
       shelf_life = item.get_shelf_life();
     }
+
+    std::cout << "got reference to food and shelf life" <<std::endl;
     
     // add inventory to the warehouse
     house->add_inventory(upc, quantity, shelf_life);
+
+    std::cout << "finished" <<std::endl;
   }
   
   /** 
@@ -248,8 +257,7 @@ namespace inventory_report
       house->update_day();
       
       // take care of its expire inventory
-      house->remove_expired_inventory();
-        
+      house->remove_expired_inventory();   
     }
     
   }
