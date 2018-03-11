@@ -87,4 +87,53 @@ namespace inventory_report
     // return this, always the final step of an overloaded operator=
     return *this;
   }
+  
+  /**
+   * returns true if upc of lhs is greater than that of rhs
+   */
+  bool food_item::operator> (const food_item & rhs) const
+  {
+    return this->item_upc_code > rhs.item_upc_code;
+  }
+  
+  /**
+   * returns true if upc of lhs is greater or equal to that of rhs
+   */
+  bool food_item::operator>= (const food_item & rhs) const
+  {
+    return !(*this < rhs);
+  }
+  
+  /**
+   * returns true if upc of lhs is less than or equal to that of rhs
+   */
+  bool food_item::operator<= (const food_item & rhs) const
+  {
+    return !(*this > rhs);
+  }
+  
+  /**
+   * returns true if upc of lhs is less than that of rhs
+   */
+  bool food_item::operator< (const food_item & rhs) const
+  {
+    return this->item_upc_code < rhs.item_upc_code;
+  }
+  
+  /**
+   * returns true if upc of lhs is equal to that of rhs
+   */
+  bool food_item::operator== (const food_item & rhs) const
+  {
+    return this->item_upc_code == rhs.item_upc_code;
+  }
+  
+  /**
+   * returns true if upc of lhs is not equal to that of rhs
+   */
+  bool food_item::operator!= (const food_item & rhs) const
+  {
+    return !(*this == rhs);
+  }
+  
 }

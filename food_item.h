@@ -70,7 +70,16 @@ namespace inventory_report
       * object rhs into the object to the left of the operator.
       */
       food_item & operator= (const food_item & rhs);
-
+      
+      /**
+       * overloaded operators. All operators compare objects upcs
+       */
+      bool operator> (const food_item & rhs) const;
+      bool operator>= (const food_item & rhs) const;
+      bool operator<= (const food_item & rhs) const;
+      bool operator< (const food_item & rhs) const;
+      bool operator== (const food_item & rhs) const;
+      bool operator!= (const food_item & rhs) const;
   };
 }
 
