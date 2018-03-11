@@ -10,9 +10,6 @@
 
 #include "report.h"
 
-
-
-
 namespace inventory_report
 {
 
@@ -324,8 +321,6 @@ namespace inventory_report
    */
   std::vector<std::string> report::request_popular_items()
   {
-    
-    
     std::set<popular_product, popularity_comp> popularity_set = 
       std::set<popular_product, popularity_comp> ();
     
@@ -398,7 +393,67 @@ namespace inventory_report
    */
    std::vector<std::string> report::request_well_stocked_items()
    {
-   
+     // vector that we will build up and return at the end
+      std::vector<std::string> result;
+
+      // set that will hold the most popular items
+      std::set<std::string> well_stocked;
+
+      // set that will hold all items
+      std::set<std::string> all_items;
+
+      // make an iterator to loop through underfilled_orders
+      name_warehouse_map::iterator it = warehouses->begin();
+      name_warehouse_map::iterator end = warehouses->end();
+
+      bool not_first = false;
+      for(it; it != end; it++)
+      { 
+        // pull out the date and convert to a string
+        warehouse w = it->second;
+        
+        // pull out the inventory from the warehouse
+        std::map< std::string, std::list<item_status> > inventory = w.get_inventory();
+        
+        // make an iterator to loop through the orders
+        std::map< std::string, std::list<item_status> >::iterator it2 = inventory.begin();
+        std::map< std::string, std::list<item_status> >::iterator end2 = inventory.end();    
+
+        for (it2; it2 != end2; it2++)
+        {
+          // get the item
+          std::string upc = it2->first;
+
+          // add the food item to all items
+          std::pair<std::set<std::string>::iterator, bool> insertion = all_items.insert(upc);
+
+          if (not_first)
+          {
+            if (!(insertion.second))
+            {
+              well_stocked.insert(upc);
+            }
+          }
+        }
+
+        not_first = true;
+      }
+
+      // make an iterator to loop through the orders
+      std::set<std::string>::iterator it2 = well_stocked.begin();
+      std::set<std::string>::iterator end2 = well_stocked.end();    
+
+      for (it2; it2 != end2; it2++)
+      {
+        // get the item
+        std::string upc = *it2;
+
+        // entry that will go into vector
+        std::string entry = upc + food_items->at(upc).get_name();
+        result.push_back(entry);
+      }
+
+      return result;
    }
   
   /**
