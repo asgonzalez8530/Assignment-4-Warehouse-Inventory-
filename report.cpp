@@ -160,6 +160,14 @@ namespace inventory_report
   }
   
   /**
+   * Returns a vector containing all cell names which currently have contents
+   */
+  const std::vector<std::string> getNonEmptyCells() const
+  {
+    
+  }
+  
+  /**
    * If the date has not been set does nothing. Else, processes all pending
    * requests tracking any underfilled items. 
    */
