@@ -319,7 +319,7 @@ std::string request_most_popular_products(inventory_report::report * r)
     // dereference the iterator to get the string stored at that location
     report += *it;
     
-    if (count == underfilled_orders_report.size() - 1)
+    if (count == underfilled_order_report.size() - 1)
     {
       break;
     }
