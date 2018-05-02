@@ -24,11 +24,11 @@ namespace inventory_report
    */
   report::report()
   {
-    warehouses = new name_warehouse_map();
-    food_items = new upc_food_item_map();
-    requests = new request_list();
-    underfilled_orders = new date_items_map();
-    popular_products = new upc_number_map();
+    warehouses = name_warehouse_map();
+    food_items = upc_food_item_map();
+    requests = request_list();
+    underfilled_orders = date_items_map();
+    popular_products = upc_number_map();
     date = NULL;
   }
   
@@ -63,10 +63,10 @@ namespace inventory_report
    */ 
   void report::add_warehouse(const std::string & name)
   {
-    warehouse house = warehouse(name);
+    warehouse house(name);
 
     // map the name to the ware house object in warehouses
-    warehouses->insert(std::pair<std::string, warehouse> (name, house));   
+    warehouses.insert(std::pair<std::string, warehouse> (name, house));   
 
   }
   
@@ -80,12 +80,12 @@ namespace inventory_report
     std::pair<std::string, food_item> upc_item_pair(upc, food_item(name, upc, shelf_life));
     
     
-    food_items->insert(std::pair<std::string, food_item>(upc_item_pair));
+    food_items.insert(upc_item_pair);
       
     
     // all products will appear in popular_products even if they haven't been
     // requested before
-    popular_products->insert(std::pair<std::string, long long>(upc, 0));
+    popular_products.insert(std::pair<std::string, long long>(upc, 0));
   }
   
   /**
@@ -100,31 +100,21 @@ namespace inventory_report
       return;
     }
 
-
-    
-    warehouse * house;
-    
-    // get reference to the warehouse safely
-    if (warehouses->count(warehouse_name))
-    {
-
-      house = &(warehouses->at(warehouse_name));
-    }
+    warehouse & house = warehouses.at(warehouse_name);
 
    
     // lookup the shelflife for this food item
     int shelf_life = 0;
     
     // get reference to food_item safely
-    if (food_items->count(upc))
+    if (food_items.count(upc))
     {
-      food_item item = food_items->at(upc);
+      food_item item = food_items.at(upc);
       shelf_life = item.get_shelf_life();
     }
 
-    
     // add inventory to the warehouse
-    house->add_inventory(upc, quantity, shelf_life);
+    house.add_inventory(upc, quantity, shelf_life);
 
   }
   
@@ -144,26 +134,21 @@ namespace inventory_report
     }    
     
     // update popular_products
-    if (popular_products->count(upc))
+    if (popular_products.count(upc))
     {
       // get an iterator which points to the product 
-      upc_number_map::iterator it= popular_products->find(upc);
+      upc_number_map::iterator it= popular_products.find(upc);
       // follow the iterator to the second element of the pair and add quantity
       // to it.
-      it->second += quantity;
+
+      int new_quantity = quantity + it->second;
+
+      it->second = new_quantity;
     }
     
     // add the request to the pending requests
     shipment_request request = {warehouse_name, upc, quantity};
-    requests->push_back(request);
-    
-  }
-  
-  /**
-   * Returns a vector containing all cell names which currently have contents
-   */
-  const std::vector<std::string> getNonEmptyCells() const
-  {
+    requests.push_back(request);
     
   }
   
@@ -178,38 +163,32 @@ namespace inventory_report
       return;
     } 
     
-    while (!requests->empty())
+    while (!requests.empty())
     {
       // get a pointer to the first item of the list
-      request_list::iterator request = requests->begin();
+      request_list::iterator request = requests.begin();
       
       // process the request
       // get the warehouse for this request
-      warehouse * house;
-    
-      // get reference to the warehouse safely
-      if (warehouses->count(request->name))
-      {
-        house = &(warehouses->at(request->name));
-      }
+      warehouse & house = warehouses.at(request->name);
       
       // follow the pointer to the warehouse and remove the inventory. Story the
       // amount removed to check for an underfilled order
-      int amount_removed = house->remove_inventory(request->upc,
+      int amount_removed = house.remove_inventory(request->upc,
         request->quantity);
       
       // make sure full request was fulfilled
       if (amount_removed != request->quantity)
       {
         // wasn't completely fulfilled, need to track it as an underfilled item  
-        if (underfilled_orders->count(*date))
+        if (underfilled_orders.count(*date))
         {
           // date is already in underfilled_orders
           // get the set
-          std::set<std::string> * orders = &(underfilled_orders->at(*date));
+          std::set<std::string> & orders = underfilled_orders.at(*date);
           
           // add the upc to the set of underfilled orders on this date
-          orders->insert(request->upc);
+          orders.insert(request->upc);
         }
         else
         {
@@ -219,13 +198,13 @@ namespace inventory_report
           orders.insert(request->upc);
           
           // date is not already in underfilled_orders create entry
-          underfilled_orders->insert(
+          underfilled_orders.insert(
             std::pair<boost_date, std::set<std::string> > (*date, orders)); 
           
         }
       }
       // pop the front of the list and return to top to process next request
-      requests->pop_front();
+      requests.pop_front();
     }
     
     
@@ -257,20 +236,20 @@ namespace inventory_report
     // for each warehouse
     
     // get an iterator for the warehouses map that points to the beginning
-    name_warehouse_map::iterator it = warehouses->begin();
+    name_warehouse_map::iterator it = warehouses.begin();
     // and another for the end
-    name_warehouse_map::iterator end = warehouses->end();
+    name_warehouse_map::iterator end = warehouses.end();
     
     for (it; it != end; it++)
     {
       // get a pointer to the actual warehouse
-      warehouse * house = &(it->second);
+      warehouse & house = it->second;
       
       // update its day
-      house->update_day();
+      house.update_day();
       
       // take care of its expire inventory
-      house->remove_expired_inventory();   
+      house.remove_expired_inventory();   
     }
     
   }
@@ -292,46 +271,49 @@ namespace inventory_report
     // vector that we will build up and return at the end
     std::vector<std::string> result;
 
+    std::cout << "Entered into request_underfilled_orders()" << std::endl;
+    std::cout << "underfilled_orders size: " << underfilled_orders.size() <<std::endl;
+
     // make an iterator to loop through underfilled_orders
-    date_items_map::iterator it = underfilled_orders->begin();
-    date_items_map::iterator end = underfilled_orders->end();
+    date_items_map::iterator it = underfilled_orders.begin();
+    date_items_map::iterator end = underfilled_orders.end();
 
     for(it; it != end; it++)
     {
       // pull out the date and convert to a string
       boost_date d = it->first;
-      std::string entry = "";
-      entry.push_back(d.month());
-      entry.push_back('/');
-      entry.push_back(d.day());
-      entry.push_back('/');
-      entry.push_back(d.year());
-
+      std::stringstream entry;
+      entry << d.month() << '/' << d.day() << '/' << d.year();
+      
+      std::string entry_date = entry.str();
+      std::cout << "Date in entry: " << entry_date << std::endl;
+      
       // pull out the set of orders that correspond to that date
-      std::set<std::string> * orders = &(it->second);
-      std::string order_results = "";
+      std::set<std::string> & orders = it->second;
+      
       
       // make an iterator to loop through the orders
-      std::set<std::string>::iterator it2 = orders->begin();
-      std::set<std::string>::iterator end2 = orders->end();    
+      std::set<std::string>::iterator orders_it = orders.begin();
+      std::set<std::string>::iterator orders_end = orders.end();    
 
-      for (it2; it2 != end2; it2++)
+      for (orders_it; orders_it != orders_end; orders_it++)
       {
+        std::stringstream order;
+
         // get the upc
-        std::string upc = *it2;
+        std::string upc = *orders_it;
 
         // map the upc to the item name
-        std::string name = food_items->at(upc).get_name();
+        std::string name = food_items.at(upc).get_name();
 
-        // insert the upc and item name into the order_result string
-        order_results += upc + name;
+        // insert the upc and item name into the order_result 
+        order << entry_date << " " << upc << " " << name;
+
+        result.push_back(order.str());
+
+        std::cout << "underfilled order: " << order << std::endl;
       }
 
-      // add the order information to the date entry 
-      entry += order_results;
-
-      // add the order entry to the end of the vector
-      result.push_back(entry);
     }
 
     return result;
@@ -351,14 +333,13 @@ namespace inventory_report
    */
   std::vector<std::string> report::request_popular_items()
   {
-    std::set<popular_product, popularity_comp> popularity_set = 
-      std::set<popular_product, popularity_comp> ();
+    std::set<popular_product, popularity_comp> popularity_set;
     
     // create a scope for these iterators
     {
       // add all items to a set
-      upc_number_map::iterator item = popular_products->begin();
-      upc_number_map::iterator end = popular_products->end();
+      upc_number_map::iterator item = popular_products.begin();
+      upc_number_map::iterator end = popular_products.end();
     
       for (item; item != end; item++)
       {
@@ -398,11 +379,11 @@ namespace inventory_report
       long long req = item->requests;
       
       // get the name of this item
-      std::string name = food_items->at(upc).get_name();
+      std::string name = food_items.at(upc).get_name();
       
       // put the string together
       std::stringstream ss;
-      ss << req << " " << upc << name; 
+      ss << req << " " << upc << " " << name; 
       
       // add it to the vector
       return_vector.push_back(ss.str());
@@ -423,7 +404,7 @@ namespace inventory_report
    */
    std::vector<std::string> report::request_well_stocked_items()
    {
-     // vector that we will build up and return at the end
+      // vector that we will build up and return at the end
       std::vector<std::string> result;
 
       // set that will hold the most popular items
@@ -432,55 +413,51 @@ namespace inventory_report
       // set that will hold all items
       std::set<std::string> all_items;
 
-      // make an iterator to loop through underfilled_orders
-      name_warehouse_map::iterator it = warehouses->begin();
-      name_warehouse_map::iterator end = warehouses->end();
-
-      bool not_first = false;
-      for(it; it != end; it++)
-      { 
-        // pull out the date and convert to a string
-        warehouse w = it->second;
-        
-        // pull out the inventory from the warehouse
-        std::map< std::string, std::list<item_status> > inventory = w.get_inventory();
-        
-        // make an iterator to loop through the orders
-        std::map< std::string, std::list<item_status> >::iterator it2 = inventory.begin();
-        std::map< std::string, std::list<item_status> >::iterator end2 = inventory.end();    
-
-        for (it2; it2 != end2; it2++)
-        {
-          // get the item
-          std::string upc = it2->first;
-
-          // add the food item to all items
-          std::pair<std::set<std::string>::iterator, bool> insertion = all_items.insert(upc);
-
-          if (not_first)
-          {
-            if (!(insertion.second))
-            {
-              well_stocked.insert(upc);
-            }
-          }
-        }
-
-        not_first = true;
-      }
-
-      // make an iterator to loop through the orders
-      std::set<std::string>::iterator it2 = well_stocked.begin();
-      std::set<std::string>::iterator end2 = well_stocked.end();    
-
-      for (it2; it2 != end2; it2++)
       {
-        // get the item
-        std::string upc = *it2;
+        // make an iterator to loop through warehouses
+        name_warehouse_map::iterator it = warehouses.begin();
+        name_warehouse_map::iterator end = warehouses.end();
 
-        // entry that will go into vector
-        std::string entry = upc + food_items->at(upc).get_name();
-        result.push_back(entry);
+        for(it; it != end; it++)
+        { 
+          // pull out a warehouse
+          warehouse & w = it->second;
+          
+          // pull out the inventory from the warehouse
+          std::set<std::string> inv = w.get_inventory();
+
+          // add the inventory to all_items
+          std::set<std::string>::iterator inv_it = inv.begin();
+          std::set<std::string>::iterator inv_end = inv.end();
+
+          for (inv_it; inv_it != inv_end; inv_it++)
+          {
+            // if the item isn't in all_items, add it 
+            if (all_items.count(*inv_it) < 1)
+            {
+              all_items.insert(*inv_it);
+            }
+            // if it is in all_items, we must have seen this before, add it to well_stocked
+            else
+            {
+              well_stocked.insert(*inv_it);
+            }
+            
+          }// end inner for
+          
+        }// end outer for
+
+      }// end scope block
+
+      // at this point well_stocked contains a sorted set of upc's we just need to add the name to 
+      // each item and return the set
+
+      std::set<std::string>::iterator it = well_stocked.begin();
+      std::set<std::string>::iterator end = well_stocked.end();
+
+      for (it; it != end; it++)
+      {
+        result.push_back(*it + " " + food_items.at(*it).get_name());
       }
 
       return result;
@@ -492,20 +469,6 @@ namespace inventory_report
    */ 
   void report::clean()
   {
-    delete warehouses;
-    warehouses = NULL;
-    
-    delete food_items;
-    food_items = NULL;
-    
-    delete requests;
-    requests = NULL;
-    
-    delete underfilled_orders;
-    underfilled_orders = NULL;
-    
-    delete popular_products;
-    popular_products = NULL;
     
     if (date != NULL)
     {

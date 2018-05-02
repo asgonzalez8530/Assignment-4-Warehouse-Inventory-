@@ -235,11 +235,23 @@ namespace inventory_report
   }
 
   /**
-   * Returns a reference to the inventory contained by this warehouse
+   * Returns a set containing the UPC's of all items stocked by this warehouse.
    */
-  const inventory & warehouse::get_inventory() const
+  std::set<std::string> warehouse::get_inventory() const
   {
-    return *my_inventory;
+    std::set<std::string> inv; // a set to put item upc's
+
+    inventory::const_iterator it = my_inventory->begin();
+    inventory::const_iterator end = my_inventory->end();
+
+    // add each upc to the set
+    for (it; it != end; it++)
+    {
+      inv.insert(it->first);
+    }
+
+    // return the set
+    return inv;
   }
 
   /**

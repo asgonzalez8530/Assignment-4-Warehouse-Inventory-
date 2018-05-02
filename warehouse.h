@@ -14,6 +14,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <set>
 
 
 namespace inventory_report
@@ -113,7 +114,7 @@ namespace inventory_report
       /**
        * Returns a reference to the inventory contained by this warehouse
        */
-      const inventory & get_inventory() const;
+      std::set<std::string> get_inventory() const;
 
       /**
        * Overloaded assignment operator. Assigns the contents of the warehouse

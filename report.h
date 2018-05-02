@@ -54,7 +54,7 @@ namespace inventory_report
     }
   };
   
-  // typedefs to make our life easier
+  /******************* typedefs to make our life easier ****************/
   
   // a shorter name for a boost date
   typedef boost::gregorian::date boost_date; 
@@ -85,21 +85,21 @@ namespace inventory_report
   {
         
     // warehouses maps warehouse names to a warehouse object with the same name
-    name_warehouse_map * warehouses;
+    name_warehouse_map warehouses;
     
     // food_items maps upc's to indivdual food items allowing for easy look up
     // of information about food items
-    upc_food_item_map * food_items;
+    upc_food_item_map food_items;
     
     // contians a list of pending requests. This list is emptied by end_day()
-    request_list * requests;
+    request_list requests;
     
     // maps a date to a list of upc's which are underfilled orders from that day
-    date_items_map * underfilled_orders;
+    date_items_map underfilled_orders;
     
     // maps upcs to the number of times they have been requested, all products 
     // appear in this map
-    upc_number_map * popular_products;
+    upc_number_map popular_products;
     
     // the current date. NULL if not yet specified
     boost_date * date;
