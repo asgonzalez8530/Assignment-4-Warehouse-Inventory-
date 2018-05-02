@@ -36,8 +36,8 @@ std::string get_till_end_of_line(const std::string & line,
 
 
 //******** global variables ********//
-const std::string report_by = "Report by Aaron and Anastasia\n";
-const std::string underfilled_orders = "Underfilled orders:\n";
+const std::string report_by = "Report by Aaron Bellis and Anastasia Gonzalez\n\n";
+const std::string underfilled_orders = "Underfilled Orders:\n";
 const std::string well_stocked_products = "Well-Stocked Products:\n";
 const std::string most_popular_products = "Most Popular Products:\n";
 
@@ -79,6 +79,12 @@ int main(int argc, char** argv)
     std::string line_string(line);
     std::string token = line_string.substr(0, line_string.find(word_delimiter));
     
+    // the "End" token may have an extra char so strip it
+    if (token[token.size()-1] == '\r')
+    {
+      token = token.substr(0, token.size()-1);
+    }
+
     if (token == "FoodItem")
     {
       // parse the footitem and add it to the report
@@ -204,7 +210,7 @@ void parse_request (inventory_report::report * r, const std::string & line)
     
 
   // add shipment to the warehouse in the report
-  r->receive_at_warehouse(request.name, request.upc, request.quantity);
+  r->request_from_warehouse(request.name, request.upc, request.quantity);
   
 }
 

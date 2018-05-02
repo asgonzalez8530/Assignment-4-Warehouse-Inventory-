@@ -219,6 +219,9 @@ namespace inventory_report
     inventory::iterator inv = my_inventory->begin();
     inventory::iterator end = my_inventory->end();
 
+    // this is a list of upc's for empty lists, need to be cleaned from inventory
+    std::list<std::string> cleanup;
+
     for (inv; inv != end; inv++)
     {
       // the list is actually the second item of a pair type
@@ -231,7 +234,23 @@ namespace inventory_report
       {
 	      status_list->pop_front();
       }
+
+      if (status_list->empty())
+      {
+        cleanup.push_back(inv->first);
+      }
     }
+
+    // clean up the inventory
+    std::list<std::string>::iterator clean_it = cleanup.begin();
+    std::list<std::string>::iterator clean_end = cleanup.end();
+
+    for (clean_it; clean_it != clean_end; clean_it++)
+    {
+      my_inventory->erase(*clean_it);
+    }
+
+
   }
 
   /**

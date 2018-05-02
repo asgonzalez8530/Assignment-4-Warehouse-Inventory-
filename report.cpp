@@ -85,7 +85,8 @@ namespace inventory_report
     
     // all products will appear in popular_products even if they haven't been
     // requested before
-    popular_products.insert(std::pair<std::string, long long>(upc, 0));
+    std::pair<std::string, long long> popular_pair(upc, 0);
+    popular_products.insert(popular_pair);
   }
   
   /**
@@ -106,12 +107,10 @@ namespace inventory_report
     // lookup the shelflife for this food item
     int shelf_life = 0;
     
-    // get reference to food_item safely
-    if (food_items.count(upc))
-    {
-      food_item item = food_items.at(upc);
-      shelf_life = item.get_shelf_life();
-    }
+    
+    food_item item = food_items.at(upc);
+    shelf_life = item.get_shelf_life();
+    
 
     // add inventory to the warehouse
     house.add_inventory(upc, quantity, shelf_life);
@@ -133,18 +132,14 @@ namespace inventory_report
       return;
     }    
     
-    // update popular_products
-    if (popular_products.count(upc))
-    {
-      // get an iterator which points to the product 
-      upc_number_map::iterator it= popular_products.find(upc);
-      // follow the iterator to the second element of the pair and add quantity
-      // to it.
-
-      int new_quantity = quantity + it->second;
-
-      it->second = new_quantity;
-    }
+    // get an iterator which points to the product 
+    upc_number_map::iterator it= popular_products.find(upc);
+    // follow the iterator to the second element of the pair and add quantity
+    // to it.
+    int new_quantity = quantity + it->second;
+    it->second = new_quantity;
+    
+    
     
     // add the request to the pending requests
     shipment_request request = {warehouse_name, upc, quantity};
@@ -271,9 +266,6 @@ namespace inventory_report
     // vector that we will build up and return at the end
     std::vector<std::string> result;
 
-    std::cout << "Entered into request_underfilled_orders()" << std::endl;
-    std::cout << "underfilled_orders size: " << underfilled_orders.size() <<std::endl;
-
     // make an iterator to loop through underfilled_orders
     date_items_map::iterator it = underfilled_orders.begin();
     date_items_map::iterator end = underfilled_orders.end();
@@ -283,10 +275,24 @@ namespace inventory_report
       // pull out the date and convert to a string
       boost_date d = it->first;
       std::stringstream entry;
-      entry << d.month() << '/' << d.day() << '/' << d.year();
+      int month = d.month();
+      int day = d.day();
+
+      if (month < 10)
+      {
+        entry << 0;
+      }
+
+      entry << month << '/';
+
+      if (day < 10)
+      {
+        entry << 0;
+      }
+
+      entry << day << '/' << d.year();
       
       std::string entry_date = entry.str();
-      std::cout << "Date in entry: " << entry_date << std::endl;
       
       // pull out the set of orders that correspond to that date
       std::set<std::string> & orders = it->second;
@@ -310,8 +316,6 @@ namespace inventory_report
         order << entry_date << " " << upc << " " << name;
 
         result.push_back(order.str());
-
-        std::cout << "underfilled order: " << order << std::endl;
       }
 
     }
@@ -345,6 +349,7 @@ namespace inventory_report
       {
         // get the upc
         std::string upc = item->first;
+
         // get the number of requests
         long long requests = item->second;
       
@@ -356,7 +361,6 @@ namespace inventory_report
     }
     
     // this set now contains all items and is sorted in decending order
-    
     std::vector<std::string> return_vector;
     
     // get the first three items
@@ -367,12 +371,8 @@ namespace inventory_report
     std::set<popular_product, popularity_comp>::iterator end = 
       popularity_set.end();
     
-    std::set<popular_product, popularity_comp>::iterator third_item = item;
-    third_item ++;
-    third_item ++;
-    third_item ++;
-    
-    for (item; item != end && item != third_item; item++)
+    int item_count = 0;
+    for (item, item_count; item != end && item_count < 3; item++, item_count++)
     {
       // get the item
       std::string upc = item->upc;
@@ -384,7 +384,7 @@ namespace inventory_report
       // put the string together
       std::stringstream ss;
       ss << req << " " << upc << " " << name; 
-      
+
       // add it to the vector
       return_vector.push_back(ss.str());
     }
@@ -407,7 +407,7 @@ namespace inventory_report
       // vector that we will build up and return at the end
       std::vector<std::string> result;
 
-      // set that will hold the most popular items
+      // set that will hold well stocked items
       std::set<std::string> well_stocked;
 
       // set that will hold all items
@@ -432,6 +432,7 @@ namespace inventory_report
 
           for (inv_it; inv_it != inv_end; inv_it++)
           {
+
             // if the item isn't in all_items, add it 
             if (all_items.count(*inv_it) < 1)
             {
@@ -451,7 +452,6 @@ namespace inventory_report
 
       // at this point well_stocked contains a sorted set of upc's we just need to add the name to 
       // each item and return the set
-
       std::set<std::string>::iterator it = well_stocked.begin();
       std::set<std::string>::iterator end = well_stocked.end();
 
