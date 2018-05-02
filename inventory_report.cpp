@@ -313,12 +313,19 @@ std::string request_most_popular_products(inventory_report::report * r)
   std::vector<std::string>::iterator it = underfilled_order_report.begin();
   std::vector<std::string>::iterator end = underfilled_order_report.end();
 
+  int count = 0;
   for(it; it != end; it++)
   {
     // dereference the iterator to get the string stored at that location
     report += *it;
+    
+    if (count == 2)
+    {
+      break;
+    }
     // insert a new line after the report entry
     report += "\n";
+    count++;
   }
 
   return report;
