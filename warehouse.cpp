@@ -78,12 +78,12 @@ namespace inventory_report
       if (last_status.death_day == shelf_life + day)
       {
 	      // ... add the quantity to this status
-	      last_status.quantity += quantity;
+	      last_status.quantity += static_cast<long long> (quantity);
       }
       else
       {
 	      // add a new item_status to the back of the list
-	      item_status status = {quantity, shelf_life, shelf_life + day};
+	      item_status status = { static_cast<long long>(quantity), shelf_life, shelf_life + day};
 	      status_list -> push_back(status);
       }
     }
@@ -94,7 +94,7 @@ namespace inventory_report
       std::list<item_status> status_list = std::list<item_status>();
       
       // create status with given info
-      item_status status = {quantity, shelf_life, shelf_life +day};
+      item_status status = {static_cast<long long>(quantity), shelf_life, shelf_life +day};
       
       // place it in the list
       status_list.push_back(status);

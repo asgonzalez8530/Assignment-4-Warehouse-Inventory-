@@ -25,7 +25,7 @@ namespace inventory_report
    */
   struct item_status 
   {
-    int quantity;
+    long long quantity;
     int shelf_life;
     int death_day;
   };

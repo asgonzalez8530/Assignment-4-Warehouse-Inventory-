@@ -85,7 +85,7 @@ namespace inventory_report
     
     // all products will appear in popular_products even if they haven't been
     // requested before
-    std::pair<std::string, long long> popular_pair(upc, 0);
+    std::pair<std::string, long long> popular_pair(upc, static_cast<long long>(0));
     popular_products.insert(popular_pair);
   }
   
@@ -136,7 +136,7 @@ namespace inventory_report
     upc_number_map::iterator it= popular_products.find(upc);
     // follow the iterator to the second element of the pair and add quantity
     // to it.
-    int new_quantity = quantity + it->second;
+    long long new_quantity = static_cast<long long>(quantity) + it->second;
     it->second = new_quantity;
     
     
